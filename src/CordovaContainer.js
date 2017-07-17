@@ -11,7 +11,9 @@ const App = () => (
   <div>
     <Main />
   </div>
-)
+);
+
+
 
 class CordovaContainer extends React.Component {
 
@@ -66,7 +68,7 @@ class CordovaContainer extends React.Component {
     
     if(event){
        localStorage.channelID = event.channelID
-      }
+    }
 
     if (event.error) {
         console.log('There was an error registering for push notifications')
@@ -79,12 +81,7 @@ class CordovaContainer extends React.Component {
   render() {
     
     return (
-       <Router history={hashHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Main} onEnter={requireAuth}></IndexRoute>
-          <Route path="login" component={LoginView}></Route>
-        </Route>
-      </Router>
+       <div />
     );
   }
 }

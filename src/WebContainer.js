@@ -7,7 +7,6 @@ import theme from './theme/themes';
 
 import Main from './views/Main';
 
-
 const App = () => (
   <div>
     <Main />
@@ -20,8 +19,7 @@ export default class WebContainer extends React.Component {
     super(props);
   }
 
-  componentDidMount(){
-  }
+  componentDidMount(){  }
 
   render() {
 

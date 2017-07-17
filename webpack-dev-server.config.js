@@ -23,18 +23,22 @@ const postcssLoader = [
 ];
 
 const config = {
-  entry : path.join(__dirname, '/src/index.js'),
+  entry : [
+    'react-hot-loader/patch',
+    path.join(__dirname, '/src/index.js')
+  ],
   resolve: {
     extensions: [".js",".jsx","css","scss","sass"],
     modules: [
-      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+      //path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, './src')
     ]
   },
   devServer : {
     contentBase: 'wwwDev',
     devtool: 'eval',
-    hot: true,     
+    // hot: true,     
     inline: true,
     port: 3010,     
     host: '0.0.0.0',
@@ -55,6 +59,11 @@ const config = {
   module: {
     rules: [
     {
+      test: /\.jsx?$/,  
+      loaders: ['babel-loader'], 
+      exclude: [nodeModulesPath],
+    },
+    {
       test: /\.(scss|sass)$/,
       loader: scssLoader,
       include: [__dirname]
@@ -64,17 +73,12 @@ const config = {
       include: [__dirname]
     },
     {
-      test: /\.jsx?$/,  
-      loaders: ['react-hot-loader', 'babel-loader'], 
-      exclude: [nodeModulesPath],
-    },
-    {
       test: /\.(jpe?g|png|gif|svg)$/i,
-      loader:'file'
+      loader:'file-loader'
     },
     {
       test: /\.(webm|mp4)$/,
-      loader: 'file'
+      loader: 'file-loader'
     },
     {
       test: /\.jsx?$/,
