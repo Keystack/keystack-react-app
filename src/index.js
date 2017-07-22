@@ -5,9 +5,10 @@ import CordovaContainer from './CordovaContainer';
 
 import { AppContainer } from 'react-hot-loader'
 
-// const container = (window.location.host.indexOf("localhost") >= 0 ) 
-// 	? (<WebContainer  />) 
-// 	: (<WebContainer />);
+String.prototype.replaceAll = function (find, replace) {
+    let str = this;
+    return str.replace(new RegExp(find, 'g'), replace);
+};
 
 const render = Component =>{
   ReactDOM.render(
@@ -18,8 +19,8 @@ const render = Component =>{
   );
 } 
 
-render(WebContainer);
+render(CordovaContainer);
 
 if (module.hot) {
-  module.hot.accept('./WebContainer', () => { render(WebContainer) })
+  module.hot.accept('./CordovaContainer', () => { render(CordovaContainer) })
 }

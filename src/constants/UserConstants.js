@@ -6,6 +6,7 @@ module.exports = ReactFlux.createConstants([
 	'CREATE',
 	'GET',
 	'UPDATE',
+	'UPDATE_AVATAR',
 	'REQUEST_PHONE_VERIFICATION',
 	'SUBMIT_PHONE_VERIFICATION',
 	'IMPORT_SMS',

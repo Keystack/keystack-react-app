@@ -2,10 +2,13 @@ import request from 'superagent-bluebird-promise';
 import nocache from 'superagent-no-cache';
 import ReactFlux from 'keystack-react-flux';
 import apiConstants from '../constants/ApiConstants';
+import KeystackUtils from '../utils/keystack-utils';
+
+
+const DEV_MODE = (KeystackUtils.DEV_ENV && KeystackUtils.LOG_SETTINGS.API);
 
 let Api = (function(){
 
-    console.log(window);
 
     let DEV_BASEURL = 
         ( window.location.origin === "http://localhost:3010") 
@@ -104,6 +107,8 @@ let Api = (function(){
      */
 
     function _storeUserCredentials( data ){
+        if( data === null) return;
+
         let { email, authentication_token } = data;
 
         if( email && authentication_token ){
@@ -121,6 +126,9 @@ let Api = (function(){
     function _handleSuccess( res ){
         res = res || "{}";
         let data = JSON.parse(res.text);
+
+        if( DEV_MODE )
+            KeystackUtils.log(data);
 
         _storeUserCredentials(data);
         
@@ -140,13 +148,16 @@ let Api = (function(){
             localStorage.clear();
         }
 
+        if( DEV_MODE )
+            KeystackUtils.log(err);
+
         throw new ApiUtilXHRError(err);
     };    
 
 
     let api = {
 
-        signUp : function( first, last, email, password){
+        signUp : function( user ){
             
             // build url
             let url = DEV_ENV ? makeDevUrl('users/') : makeUrl('users/');
@@ -159,9 +170,15 @@ let Api = (function(){
             _pendingRequests[key] = 
                 request
                     .post(url)
-                    .send({password : password})
+                    .send({password:user.password})
                     .timeout(TIMEOUT)
-                    .query({ first_name: first , last_name:last, email : email})
+                    .query({ 
+                      first_name: user.first_name,  
+                      phone: user.phone, 
+                      last_name:user.last_name, 
+                      email : user.email,
+                      channel_id : localStorage.channelID
+                    })
                     .then(_handleSuccess,_handleFail);
 
             return _pendingRequests[key];
@@ -171,11 +188,8 @@ let Api = (function(){
         
             // build url
             let url = DEV_ENV ? makeDevUrl('users/me/') : makeUrl('users/me/');
-            let auth = make_base_auth(user,password);
-            let key = apiConstants.LOGIN;
 
             let req = {
-                auth : make_base_auth(user,password),
                 key : apiConstants.LOGIN
             };
 
@@ -194,13 +208,9 @@ let Api = (function(){
             return _pendingRequests[req.key];
         },
 
-        
 
         getUser : function(){
-            
-            if( !localStorage.token )
-                throw new Error("APIUTILS: No user token available.");
-
+          
             // build url
             let url = DEV_ENV ? makeDevUrl('users/me/') : makeUrl('users/me/');
 
@@ -221,6 +231,34 @@ let Api = (function(){
                     .timeout(TIMEOUT)
                     .set("X-USER-TOKEN",req.auth_token)
                     .set("X-USER-EMAIL",req.email)
+                    .then(_handleSuccess,_handleFail);
+
+            return _pendingRequests[req.key];
+        },
+
+        getUserByNumber : function(number){
+          
+            // build url
+            let url = DEV_ENV ? makeDevUrl('users_search/') : makeUrl('users_search/');
+
+            let req = {
+                url : url,
+                auth_token : localStorage.token,
+                email : localStorage.email,
+                key : apiConstants.GET_USER
+            };
+
+            // abort any other similar requests
+            abortPendingRequests(req.key);
+        
+            // create a pending request and make call to api
+             _pendingRequests[req.key] = 
+                request
+                    .get(req.url)
+                    .query({search:number,channel_id : localStorage.channelID})
+                    .timeout(TIMEOUT)
+                    //.set("X-USER-TOKEN",req.auth_token)
+                    //.set("X-USER-EMAIL",req.email)
                     .then(_handleSuccess,_handleFail);
 
             return _pendingRequests[req.key];
@@ -252,7 +290,65 @@ let Api = (function(){
                     .then(_handleSuccess,_handleFail);
 
             return _pendingRequests[req.key];
-        }
+        },
+
+        uploadUserAvatar : function( user, formData ){
+
+            // build url
+            let url = DEV_ENV ? makeDevUrl('users/' + user.id) : makeUrl('users/' + user.id);
+           
+            let req = {
+                url : url,
+                auth_token : localStorage.token,
+                email : localStorage.email,
+                key : apiConstants.UPDATE_USER_AVATAR
+            };
+
+            // abort any other similar requests
+            abortPendingRequests(req.key);
+
+            // create a pending request and make call to api
+             _pendingRequests[req.key] = 
+                request
+                    .put(req.url)
+                    .send(formData)
+                    .timeout(TIMEOUT)
+                    .set("X-USER-TOKEN",req.auth_token)
+                    .set("X-USER-EMAIL",req.email)
+                    .then(_handleSuccess,_handleFail);
+
+            return _pendingRequests[req.key];
+
+        },
+
+        getInterests : function(){
+            
+            // build url
+            let url = DEV_ENV ? makeDevUrl('interests/') : makeUrl('interests/');
+
+            let req = {
+                url : url,
+                auth_token : localStorage.token,
+                email : localStorage.email,
+                key : apiConstants.GET_INTERESTS
+            };
+
+            // abort any other similar requests
+            abortPendingRequests(req.key);
+        
+            // create a pending request and make call to api
+             _pendingRequests[req.key] = 
+                request
+                    .get(req.url)
+                    .timeout(TIMEOUT)
+                    .set("X-USER-TOKEN",req.auth_token)
+                    .set("X-USER-EMAIL",req.email)
+                    .then(_handleSuccess,_handleFail);
+
+            return _pendingRequests[req.key];
+        },
+
+
 
         
     }

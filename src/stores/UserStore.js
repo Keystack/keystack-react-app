@@ -1,205 +1,311 @@
 import ReactFlux from 'keystack-react-flux';
 import UserConstants from '../constants/UserConstants';
-import Api from '../utils/Api';
+import KeystackUtils from '../utils/keystack-utils';
 
+const defaults = {
+	data : {
+		first_name : "",
+		last_name : "",
+		phone : "",
+		channel_id: (localStorage)?localStorage.channelID : '',
+		interests : [],
+	},
+	status : {
+		isAuth: false,
+		error: null
+	}
+};
 
 let UserStore = ReactFlux.createStore({
 
 	getInitialState: function(){
 				
 		if( localStorage.user ){
-			console.log("UserStore.getInitialState()","Loading prevState");
+
+			KeystackUtils.log("UserStore.getInitialState()","Loading prevState");
+			
 			let prevState = JSON.parse(localStorage.user);
-			return prevState;
+
+			return {
+				data : _.assign({},defaults,prevState),
+				status : {
+					isAuth :  localStorage.token ? true : false,
+					loading : false,
+					error : null
+				}
+			};
 		}
 
-		return {
-			data: null,
-			isAuth: localStorage.token ? true : false,
-			error: null
-		}
-	},
-
-	storeDidMount: function(){
-		// console.log("UserStore.storeDidMount");
+		return _.assign({},defaults)
 	},
 
 	getStateString(){
 		return JSON.stringify(this.getState());
 	},
 
+	isAuth(){
+		return this.getStatus('isAuth');
+	},
+
 	getData(){
-		return this.get('data');
+		return this.get('data') || {};
 	},
 
-	getEmail: function(){
-		return this.get('isAuth') ? this.get('data').email : null;
+	getAttribute( attr ){
+		return this.get('data')[attr];
 	},
 
-	isVerified: function(){
-		return this.get('isAuth') ? this.get('data').phone_verified : false;
+	getStatus(attr){
+		return (attr) ? this.get('status')[attr] : this.get('status')
+	},
+
+	getName(){
+		let name = "";
+
+		if( this.getAttribute('first_name') )
+			name = name.concat(this.getAttribute('first_name'));
+
+		if( this.getAttribute('last_name') )
+			name = name.concat(" ",this.getAttribute('last_name'))
+
+		return name;
 	},
 
 	persist : function(){
-		let state = JSON.stringify(this.getState());
+		let state = JSON.stringify(this.get('data'));
 		localStorage.user = state;
 	}
 
-}, [
-
-	[UserConstants.GET, function onGet(payload){
+}, 
+[
+	[UserConstants.LOGIN, function onLogin(payload){
+		
+		KeystackUtils.log("UserStore.onLogin", JSON.stringify(payload));
 		
 	}],
 
-	[UserConstants.GET_SUCCESS, function handleGetSuccess(payload){
+	[UserConstants.LOGIN_SUCCESS, function handleLoginSuccess(payload){
 		
-		if( payload ){			
+		KeystackUtils.log("UserStore.handleLoginSuccess",payload);
+		
+		if( payload.id ){
+			this.setState({
+				status:{
+					loading : false,
+					error : null,			
+					isAuth : true
+				},
+				data : payload
+			},UserConstants.LOGIN_SUCCESS);	
+		}		
+
+		this.persist();
+	}],
+
+
+	[UserConstants.LOGIN_FAIL, function handleLoginFailure(error){
+		
+		KeystackUtils.log("UserStore.handleLoginFailure()", payload);
+
+		let { err } = error.details.body
+		
+		this.setState({
+			status: {
+				loading : false,
+				error : err,
+			},
+		},UserConstants.LOGIN_FAIL);
+	}],
+
+	[UserConstants.GET, function onGet(payload){
+		KeystackUtils.log("UserStore.onGet()",payload);
+
+		this.setState({
+			status : {
+				loading : true,
+				error : null,
+				errorMsg : null
+			}
+		},UserConstants.GET);
+
+	}],
+
+	[UserConstants.GET_SUCCESS, function handleGetSuccess(payload){
+
+		KeystackUtils.log("UserStore.handleGetSuccess()",payload);
+		
+		if( payload.id ){			
 			
 			this.setState({
-				isUpdating: false,
-				data: payload,
-				isAuth : true,
-				error: null
-			});
+				status:{
+					loading : false,
+					error : null,			
+					isAuth : true
+				},
+				data : payload
+			},UserConstants.GET_SUCCESS);
 
 			this.persist();
+		}else if(payload.error){
+			this.setState({
+				status: {
+					loading : false,
+					error : payload.error,
+				},
+			},UserConstants.GET_FAIL);
+			
 		}
 		
 	}],
 
 	[UserConstants.GET_FAIL, function handleGetFailure(error){
 		
-		console.log("UserStore.handleGetFailure", error);
+		KeystackUtils.log("UserStore.handleGetFailure", error);
+		
+		let { err } = error.details.body
 		
 		this.setState({
-			isUpdating: false,
-			data: null,
-			error: error.message
-		});
+			status: {
+				loading : false,
+				error : err,
+			},
+		},UserConstants.GET_FAIL);
 	}],
+
 
 	[UserConstants.UPDATE, function onUpdate(payload){
 		
-		console.log("UserStore.onUpdate", payload);
+		KeystackUtils.log("UserStore.onUpdate", payload);
 		
 		this.setState({
-			isUpdating: true
-		});
+			status : {
+				loading : true,
+				error : null,
+				errorMsg : null
+			}
+		},UserConstants.UPDATE);
 	}],
 
 	[UserConstants.UPDATE_SUCCESS, function handleUpdateSuccess(payload){
 		
-		console.log("UserStore.handleUpdateSuccess", payload);
+		KeystackUtils.log("UserStore.handleUpdateSuccess", payload);
 
 		if( payload.id ){
 			this.setState({
-				isUpdating: false,
-				data: payload,
-				isAuth : true,
-				error: null
-			});
+				status:{
+					loading : false,
+					error : null,			
+					isAuth : true
+				},
+				data : payload
+			},UserConstants.UPDATE_SUCCESS);
 			this.persist();
 		}
 		
 	}],
 
-	[UserConstants.UPDATE_FAIL, function handleUpdateFailure(error){
+	[UserConstants.UPDATE_AVATAR, function onUpdateAvatar(payload){
 		
-		console.log("UserStore.handleUpdateFailure", error);
+		KeystackUtils.log("UserStore.onUpdateAvatar", payload);
 		
 		this.setState({
-			isUpdating: false,
-			data: null,
-			error: error.message
-		});
+			status : {
+				loading : true,
+				error : null,
+				errorMsg : null
+			}
+		},UserConstants.UPDATE_AVATAR);
+	}],
+
+	[UserConstants.UPDATE_AVATAR_SUCCESS, function handleUpdateAvatarSuccess(payload){
+		
+		KeystackUtils.log("UserStore.handleUpdateAvatarSuccess", payload);
+
+		if( payload.id ){
+
+			this.setState({
+				status:{
+					loading : false,
+					error : null,			
+					isAuth : true
+				},
+				data : payload
+			},UserConstants.UPDATE_AVATAR_SUCCESS);
+
+			this.persist();
+		}
+		
+	}],
+
+	[UserConstants.UPDATE_AVATAR_FAIL, function handleUpdateAvatarFailure(error){
+		
+		KeystackUtils.log("UserStore.handleUpdateAvatarFailure", error);
+		
+		let { err } = error.details.body
+		
+		this.setState({
+			status: {
+				loading : false,
+				error : err,
+			}
+		},UserConstants.UPDATE_AVATAR_FAIL);
 	}],
 
 
 	[UserConstants.CREATE, function onCreate(payload){
 		
-		console.log("UserStore.onCreate", payload);
+		KeystackUtils.log("UserStore.onCreate", payload);
 		
 		this.setState({
-			isLoggingIn: true,
-			error:null,
-			errorMsg:null
-		});
+			status : {
+				loading : true,
+				error : null,
+				errorMsg : null
+			}
+		},UserConstants.CREATE);
 	}],
 
 
 	[UserConstants.CREATE_SUCCESS, function handleCreateSuccess(payload){
-		
-		console.log("UserStore.handleCreateSuccess", payload);
+		KeystackUtils.log("UserStore.handleCreateSuccess", payload);
 		
 		this.setState({
-			isLoggingIn: false,
-			error: null,
+			status:{
+				loading : false,
+				error : null,			
+				isAuth : true
+			},
 			data: payload,
-			isAuth: true
-		});
+		},UserConstants.CREATE_SUCCESS);
 
 		this.persist();
 	}],
 	
 
-	[UserConstants.CREATE_FAIL, function handleCreateFailure(error){
+	[UserConstants.CREATE_FAIL, function handleCreateFailure(err){
 		
-		console.log("UserStore.handleCreateFailure", error);
+		KeystackUtils.log("UserStore.handleCreateFailure", err);
+
+		let { error } = err.details.body;
 		
 		this.setState({
-			isLoggingIn: false,
-			error: error.message
-		});
-	}],
-
-
-	/**
-	* Dispatcher calls this directly when it receives a USER_LOGIN message,
-	* just before it tries to execute the corresponding action
-	*/
-	[UserConstants.LOGIN, function onLogin(payload){
-		
-		console.log("UserStore.onLogin", JSON.stringify(payload));
-		
-	}],
-
-	[UserConstants.LOGIN_SUCCESS, function handleLoginSuccess(payload){
-		
-		console.log("UserStore.handleLoginSuccess",payload);
-	
-		this.setState({
-			isLoggingIn: false,
-			error: null,
-			data: payload,
-			isAuth: true
-		});
-
-		this.persist();
-	}],
-
-
-	[UserConstants.LOGIN_FAIL, function handleLoginFailure(payload){
-		
-		console.log("UserStore.handleLoginFailure()",payload);
-		
-		this.setState({
-			isLoggingIn: false,
-			error:true,
-			errorMsg: payload.error
-		});
+			status: {
+				loading : false,
+				error : error || "Error creating user, check your information!",
+			},
+		},UserConstants.CREATE_FAIL);
 	}]
+
+	
 ]);
 
 UserStore.addActionHandler(UserConstants.LOGOUT, {
 	
 	success: function(payload){
 		
-		console.log("UserStore.handleLogout",payload);
+		KeystackUtils.log("UserStore.handleLogout",payload);
 
-		// TODO : Find better place for this
-		localStorage.clear();
-		window.location.href = '/';		
-		
+		localStorage.clear();		
 	}
 });
 

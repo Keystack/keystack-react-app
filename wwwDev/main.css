@@ -2,6 +2,85 @@ html {
   font-family: "Circular-Book";
 }
 
+body {
+  font-size: 13px;
+  line-height: 20px;
+  margin:0px;
+  background-color: rgb(63, 81, 181) !important;
+  outline:none;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 21px;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
+
+
+div {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+textarea,
+input.text,
+input[type="text"],
+input[type="button"],
+input[type="submit"],
+input[type=number],
+input[type=password] {   
+    /* Remove First */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 10px 10px;
+    line-height: 20px;
+    text-align: center;
+    background: transparent;
+    outline: none;
+    border:none;
+    text-align: center;
+    
+}
+
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("./fonts/Montserrat/Montserrat-Regular.otf");
+   
+}
+@font-face {
+    font-family: "Montserrat-Light";
+    src: url("./fonts/Montserrat/Montserrat-Light.otf");
+    font-style: normal;
+}
+@font-face {
+    font-family: "Montserrat-Extra-Light";
+    src: url("./fonts/Montserrat/Montserrat-ExtraLight.otf");
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Montserrat-Medium";
+    src: url("./fonts/Montserrat/Montserrat-Medium.otf");
+}
+
+
 @font-face {
     font-family: "Circular-Bold";
     src: url("./fonts/lineto-circular-bold.eot");
@@ -23,13 +102,9 @@ html {
     font-weight: normal;
 }
 
-body {
-  font-size: 13px;
-  line-height: 20px;
-  margin:0px;
-  background-color: #F1F1F5 !important;
+.hidden{
+  display: none !important;
 }
-
 
 .bold-font{
   font-family: "Circular-Bold";
@@ -66,4 +141,164 @@ body {
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
+
+
+.type-form-container{
+  overflow: hidden;
+}
+
+.type-form-container .floating-next-button{
+  bottom: 50%;
+  right: 50%;
+  margin-bottom: -100px;
+  margin-right: -28px;
+  position: absolute;
+  font-size: 16px;
+  background-color: #f39c12 !important;  
+  -webkit-transition: bottom 0.3s ease-, right 0.3s ease 0s;
+  -moz-transition: bottom 0.3s ease, right 0.3s ease 0s;
+  -ms-transition: bottom 0.3s ease, right 0.3s ease 0s; /* IE10 is actually unprefixed */
+  -o-transition: bottom 0.3s ease, right 0.3s ease 0s;
+  transition: bottom 0.3s ease, right 0.3s ease 0s;
+}
+
+.type-form-container.isLast {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.type-form-container.isLast .floating-next-button{
+  bottom: 20px;
+  right: 20px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  position: fixed;
+}
+
+.type-form-container.step5 .floating-next-button{
+  bottom: 20px;
+  right: 20px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  position: fixed;
+}
+
+.type-form-container.step6 .floating-next-button{
+  bottom: 20px;
+  right: 20px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  position: fixed;
+}
+
+.type-form-container  .typeform{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 100%;
+  min-height:100%;
+  overflow-y:scroll;
+  overflow-x: hidden;
+
+}
+
+.type-form-container .typeform .wrapper{
+  height:100%;
+  padding:10px;
+}
+
+.type-form-container  .typeform .form-input{
+  position: absolute;
+  top:50%;
+  width:100%;
+  margin-top: -40px;
+}
+
+.type-form-container  .typeform .wrapper.one-third p{
+  padding-top:20%;
+}
+
+.type-form-container .wrapper p {
+  font-weight: bold;
+  font-size: 18px;
+  padding:10px;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+
+.form-input label {
+
+}
+
+.chip {
+  background-color: rgb(151, 160, 208) !important;
+  color:white !important;
+  font-weight: bold;
+}
+
+.chip small{
+  font-size:8px;
+  display:'inline-block',
+}
+
+.chip.selected{
+  background-color: rgb(63, 81, 181) !important;
+  padding:5px 10px;
+}
+
+.chip.selected span {
+  font-size: 1.2em;
+}
+
+.chip.selected small{
+  display: none;
+}
+
+
+.bubble-secondary {
+  border-radius: 99px;
+  width: 100px;
+  height: 100px;
+}
+
+.bubble-secondary .bubble-initials{
+  position:absolute;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size: 1.2em;
+}
+
+.bubble-secondary > .inner {
+  position: absolute;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 99px;
+  width: 100px;
+  height: 100px;
+  border: 5px solid rgb(63, 81, 181);
+}
+
+
+
+.bounce {
+  animation: welcomeBounce .8s 0.3s;
+  transform: scale(1);
+}
+
+@keyframes bounce {
+  0% { transform: scale(1); opacity: 1 }
+  50% { transform: scale(1.1); opacity: 1; }
+  60% { transform: scale(0.8); opacity: 1 }
+  80% { transform: scale(0.95) }
+  100% { transform: scale(1) }
+}
+
+@keyframes welcomeBounce {
+  0% { transform: scale(0.85); opacity: 1 }
+  20% { transform: scale(1.2); opacity: 1; }
+  50% { transform: scale(0.85); opacity: 1 }
+  100% { transform: scale(1) }
+}
+
 

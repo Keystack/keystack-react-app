@@ -7,18 +7,22 @@ module.exports = {
   },
 
   logout(cb) {
-    delete localStorage.token;
-    delete localStorage.email;
-    delete localStorage.user;
-    delete localStorage.contacts;
 
-    console.log("User logged out!");
+    if( localStorage.email || localStorage.token ){
+      localStorage.clear();
 
-    if (cb) cb()
-    this.onChange(false);
+      if (cb) cb()
 
-    window.location.href = ('/#/login');
-    // window.location.reload();
+      console.log('User Logged out!');
+      window.location.href = ('/#/');
+
+      // window.location.reload();
+    }
+    
+  },
+
+  isAuth(){
+    return this.loggedIn()
   },
 
   loggedIn() {

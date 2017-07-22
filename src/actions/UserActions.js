@@ -2,6 +2,9 @@ import ReactFlux from 'keystack-react-flux';
 import UserConstants from '../constants/UserConstants.js'
 import Api from '../utils/Api';
 import auth from '../utils/auth';
+import _ from 'lodash'
+
+import UserStore from '../stores/UserStore';
 
 
 let UserActions = ReactFlux.createActions({
@@ -14,9 +17,16 @@ let UserActions = ReactFlux.createActions({
     }],
 
     // Dispatch Login Action
-    create: [UserConstants.CREATE, function signUpAction(first,last, email, password){
+    logout: [UserConstants.LOGOUT, function logoutAction(){
         // Make API CALL
-        return Api.signUp('devery','channell','d1@keystack.com','password23e32');;
+        return auth.logout();
+
+    }],
+
+    // Dispatch Login Action
+    create: [UserConstants.CREATE, function signUpAction(data){
+        // Make API CALL
+        return Api.signUp(data);
 
     }],
 
@@ -25,17 +35,38 @@ let UserActions = ReactFlux.createActions({
             return Api.getUser();
     }],
 
-    update: [UserConstants.UPDATE, function update(payload){
+    getUserByNumber : [UserConstants.GET, function getUserByNumber( number ){
+            return Api.getUserByNumber( number);
+    }],
+
+    update: [UserConstants.UPDATE, function update(data){
         // Make API CALL
         if( auth.loggedIn() )
-            return Api.updateUser(payload);
+            return Api.updateUser(data);
+
+    }],
+
+    uploadUserAvatar: [UserConstants.UPDATE_AVATAR, function upload(user,formData){
+        // Make API CALL
+        if( auth.loggedIn() && formData )
+            return Api.uploadUserAvatar(user,formData);
 
     }]
 
 });
 
-// UserActions.create()
-UserActions.login('d1@keystack.com','password23e32')
-// UserActions.get()
+
+const sampleData = {
+    id : null,
+    email : 'devery@keystacksolutions.com',
+    first_name : 'devery',
+    last_name : 'channell',
+    college : 'UTD',
+    receive_app_notifications : false,
+    channel_ids : [],
+    allow_phone_access : false,
+    phone_verified: false
+};
+
 
 module.exports = UserActions;

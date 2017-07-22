@@ -4,6 +4,7 @@ const buildPath = path.resolve(__dirname, 'www');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
+
 const postcssPlugins = [
   require('postcss-cssnext')(),
   require('postcss-modules-values')
@@ -22,11 +23,15 @@ const postcssLoader = [
 ];
 
 const config = {
-  entry : path.join(__dirname, '/src/index.js'),
+  entry : [
+    'react-hot-loader/patch',
+    path.join(__dirname, '/src/index.js')
+  ],
   resolve: {
     extensions: [".js",".jsx","css","scss","sass"],
     modules: [
-      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+      //path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, './src')
     ]
   },
@@ -35,7 +40,8 @@ const config = {
     path: buildPath,
     filename: 'index.js',
   },
-  plugins: [      
+
+  plugins: [
     //Minify the bundle
     new webpack.optimize.UglifyJsPlugin({
       mangle: true,
@@ -48,9 +54,9 @@ const config = {
         unused: true,
         if_return: true,
         join_vars: true,
-        drop_console: true
+        //drop_console: true
       }
-    }),    
+    }),
     // Moves files
     new TransferWebpackPlugin([
       {from: '../wwwDev'},
@@ -59,10 +65,15 @@ const config = {
         'process.env': {
             NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         },
-    }),
+    })
   ],
   module: {
     rules: [
+    {
+      test: /\.jsx?$/,  
+      loaders: ['babel-loader'], 
+      exclude: [nodeModulesPath],
+    },
     {
       test: /\.(scss|sass)$/,
       loader: scssLoader,
@@ -71,11 +82,6 @@ const config = {
     { test: /\.css$/,
       loader: postcssLoader,
       include: [__dirname]
-    },
-    {
-      test: /\.jsx?$/,  
-      loaders: ['react-hot-loader', 'babel-loader'], 
-      exclude: [nodeModulesPath],
     },
     {
       test: /\.(jpe?g|png|gif|svg)$/i,

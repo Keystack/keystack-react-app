@@ -40,7 +40,7 @@ const config = {
     devtool: 'eval',
     // hot: true,     
     inline: true,
-    port: 3010,     
+    port: 3011,     
     host: '0.0.0.0',
   },
   devtool: 'eval',
