@@ -1,0 +1,85 @@
+
+.type-form-exit {
+  /* 0 does not work so we have to use a small number */
+  /* Start our small */
+  opacity: 0.001;
+  top:-100%;
+  -webkit-animation: fadeOut 1.2s ease ;
+  -o-animation: fadeOut 1.2s ease ;
+  animation: fadeOut 1.2s ease ;
+}
+
+.type-form-exit.active {
+  opacity: 0.001;
+  -webkit-animation: fadeIn 1.2s ease ;
+  -o-animation: fadeIn 1.2s ease ;
+  animation: fadeIn 1.2s ease ;
+  animation-delay: 800ms;
+}
+
+.type-form-appear {
+  opacity: 1;
+  -webkit-animation: fadeIn 1.2s ease ;
+  -o-animation: fadeIn 1.2s ease ;
+  animation: fadeIn 1.2s ease ;
+}
+
+.type-form-enter {
+  -webkit-animation: fadeIn 1.2s ease ;
+  -o-animation: fadeIn 1.2s ease ;
+  animation: fadeIn 1.2s ease;  
+  animation-delay: 200ms;
+}
+
+
+.type-form-enter.active {
+  opacity: 1;
+  -webkit-animation: fadeIn 1.2s ease ;
+  -o-animation: fadeIn 1.2s ease ;
+  animation: fadeIn 1.2s ease ;
+}
+
+
+
+@-webkit-keyframes fadeIn {
+  from{
+    opacity: 0.001;
+    top:0;
+  }
+  to {
+     opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  from{
+    opacity: 0.001;
+    top:100%;
+  }
+  to {
+     opacity: 1;
+     top:0;
+  }
+}
+
+
+
+@-webkit-keyframes fadeOut {
+  from{
+    opacity: 1;
+    top:0;
+  }
+  to {
+     opacity: 0.001;
+     top:-100%;
+  }
+}
+@-o-keyframes fadeOut {
+  from{
+    opacity: 1;
+    top:0;
+  }
+  to {
+     opacity: 0.001;
+     top:-100%;
+  }
+}
