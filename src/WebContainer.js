@@ -7,7 +7,7 @@ import {requireAuth,routeSignUp} from  './utils/route-validations';
 import Main    from  './views/Main';
 import Login from  './views/Login';
 import Profile from  './views/Profile';
-import Messenger from './views/Messenger'
+import Conversation from './views/Conversation';
 
 import UserStore    from './stores/UserStore';
 
@@ -41,22 +41,6 @@ export default class WebContainer extends React.Component {
     if( UserStore.isAuth() ){
         UserActions.get();
     }
-
-   // TODO : REMOVE  
-   // UserActions.create({
-   //    email:'d3@keystack.com',
-   //    password:'password23e32',
-   //    first: 'Devery',
-   //    last: 'Channell',
-   //    phone: '469-235-8390',
-   //    college: 'UTD @ A' 
-   // });
-
-   // UserActions.logout(); 
-   // UserActions.login('d1@keystack.com','password23e32')
-   // UserActions.get()
-   // UserActions.update(UserStore.getData());
-
   }
 
   render() {
@@ -68,6 +52,7 @@ export default class WebContainer extends React.Component {
           <main>
             <Switch>
               <PrivateRoute exact path='/' component={Main}/>
+              <PrivateRoute path='/conversation/:id' component={Conversation} />
               <Route path='/login' component={Login} />
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>
