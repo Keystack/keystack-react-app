@@ -1,31 +1,64 @@
 import React from 'react';
-import Input from 'react-toolbox/lib/input/Input';
-import FontIcon from 'react-toolbox/lib/font_icon';
+import ons from 'onsenui';
+import {Page,Button,Tabbar,Tab,Toolbar} from 'react-onsenui';
+import Dialer from './Dialer';
+import LoginFormModule from '../components/LoginFormModule';
+
+import auth from '../utils/auth';
+
 
 export default class Login extends React.Component {
-   state = { name: '', phone: '', multiline: '', email: '', hint: '', label: '' };
+  
+  state = { index: 1}
 
-   handleChange = (name, value) => {
-    this.setState({...this.state, [name]: value});
-   };
+  constructor(props) {
+    super(props);
+  }
+
+  renderToolbar = () => {
+    // const titles = ['Text', 'Dial','Leads'];
+    return (
+      <Toolbar>
+        <div className='center'>
+          Calucro Login
+        </div>
+      </Toolbar>
+    );
+  }
+
+  componentDidMount() {
+
+    console.log(this.context.router)
+
+    if( auth.isAuth() ){
+      // this.context.router.transitionTo("/")
+      this.props.history.push('/')
+    }
+  }
+
+  onLoginSuccess = () =>{
+    this.props.history.push('/');
+  }
+
 
   render() {
 
+    const titles = ['Text', 'Dial','Settings'];
+
     return (
-      <section>
-        <Input type='text' label='Name' name='name' value={this.state.name} onChange={this.handleChange.bind(this, 'name')} maxLength={16} />
-        <Input type='text' hint='With Hint, no label' name='name' value={this.state.label} onChange={this.handleChange.bind(this, 'label')} maxLength={16} />
-        <Input type='text' label='Disabled field' disabled />
-        <Input type='text' multiline label='Multiline' maxLength={20} value={this.state.multiline} onChange={this.handleChange.bind(this, 'multiline')} />
-        <Input type='email' label='Email address' icon='email' value={this.state.email} onChange={this.handleChange.bind(this, 'email')} />
-        <Input type='tel' label='Phone' name='phone' icon='phone' value={this.state.phone} onChange={this.handleChange.bind(this, 'phone')} />
-        <Input type='text' value={this.state.hint} label='Required Field' hint='With Hint' required onChange={this.handleChange.bind(this, 'hint')} icon='share' />
-      </section>
-    )
+      <Page renderToolbar={this.renderToolbar}>
+        <LoginFormModule onSuccess={this.onLoginSuccess} />
+      </Page>     
+    );
+
   }
   
-}
+};
 
 Login.propTypes = {
   data : React.PropTypes.object
+};
+
+Login.contextTypes ={
+  router : React.PropTypes.object
 }

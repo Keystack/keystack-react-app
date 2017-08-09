@@ -7,16 +7,12 @@ import { ThemeProvider } from 'react-css-themr';
 import theme from './theme/themes';
 
 import Login   from  './views/Login';
-import Home    from  './views/Home';
-import Splash  from  './views/Splash';
-import SignUp  from  './views/SignUp';
-import Profile from  './views/Profile';
+import Main    from  './views/Main';
 
 import UserActions  from './actions/UserActions';
 import UserStore    from './stores/UserStore';
 
 import auth from './utils/auth';
-import BeaconManager from './utils/beacon-manager';
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -42,22 +38,20 @@ export default class CordovaContainer extends React.Component {
 
   onDeviceReady(){
     
-    UAirship.setUserNotificationsEnabled(true, function (enabled) {
-        console.log("User notifications are enabled! Fire away!");
-    });
+    // UAirship.setUserNotificationsEnabled(true, function (enabled) {
+    //     console.log("User notifications are enabled! Fire away!");
+    // });
 
     if(window.screen) window.screen.orientation.lock('portrait');
-
-    BeaconManager.start();
 
     Keyboard.shrinkView(false);
     Keyboard.hideFormAccessoryBar(true);
     Keyboard.disableScrollingInShrinkView(true);
 
     // Register for any Urban Airship events
-    document.addEventListener("urbanairship.registration", this.onPushRegistration );
+    // document.addEventListener("urbanairship.registration", this.onPushRegistration );
     // Register for any Urban Airship push events
-    document.addEventListener("urbanairship.push", this.onPushEvent);
+    // document.addEventListener("urbanairship.push", this.onPushEvent);
 
     // this.setState({
     //   ready:true
@@ -90,11 +84,9 @@ export default class CordovaContainer extends React.Component {
 
   componentWillUnmount() {
 
-    BeaconManager.stop();
-
     document.removeEventListener("deviceready",this.onDeviceReady);
-    document.removeEventListener("urbanairship.registration",this.onPushRegistration);
-    document.removeEventListener("urbanairship.push",this.onPushEvent);
+    // document.removeEventListener("urbanairship.registration",this.onPushRegistration);
+    // document.removeEventListener("urbanairship.push",this.onPushEvent);
 
   }
 
@@ -127,9 +119,7 @@ export default class CordovaContainer extends React.Component {
         <ThemeProvider theme={theme} >
           <main>
             <Switch>
-              <Route exact path='/' component={Splash}/>
-              <Route path='/login' component={Login} />
-              <Route path='/signup' component={SignUp} />
+              <Route exact path='/' component={Main}/>
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>
           </main>    

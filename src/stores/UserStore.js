@@ -105,19 +105,32 @@ let UserStore = ReactFlux.createStore({
 
 	[UserConstants.LOGIN_FAIL, function handleLoginFailure(error){
 		
-		KeystackUtils.log("UserStore.handleLoginFailure()", payload);
+		KeystackUtils.log("UserStore.handleLoginFailure()", error);
 
-		let { err } = error.details.body
-		
-		this.setState({
-			status: {
-				loading : false,
-				error : err,
-			},
-		},UserConstants.LOGIN_FAIL);
+		try{
+			let { error } = err.details.body;
+
+			this.setState({
+				status: {
+					loading : false,
+					error : error,
+				},
+			},UserConstants.LOGIN_FAIL);
+
+		}catch(e){
+
+			this.setState({
+				status: {
+					loading : false,
+					error : 'NETWORK ERROR',
+				},
+			},UserConstants.LOGIN_FAIL);
+		}
+
 	}],
 
 	[UserConstants.GET, function onGet(payload){
+		
 		KeystackUtils.log("UserStore.onGet()",payload);
 
 		this.setState({
@@ -158,18 +171,30 @@ let UserStore = ReactFlux.createStore({
 		
 	}],
 
-	[UserConstants.GET_FAIL, function handleGetFailure(error){
+	[UserConstants.GET_FAIL, function handleGetFailure(err){
 		
-		KeystackUtils.log("UserStore.handleGetFailure", error);
+		KeystackUtils.log("UserStore.handleGetFailure", err);
+
+		try{
+			let { error } = err.details.body;
+
+			this.setState({
+				status: {
+					loading : false,
+					error : error,
+				},
+			},UserConstants.GET_FAIL);
+
+		}catch(e){
+
+			this.setState({
+				status: {
+					loading : false,
+					error : 'NETWORK ERROR',
+				},
+			},UserConstants.GET_FAIL);
+		}
 		
-		let { err } = error.details.body
-		
-		this.setState({
-			status: {
-				loading : false,
-				error : err,
-			},
-		},UserConstants.GET_FAIL);
 	}],
 
 
@@ -199,6 +224,7 @@ let UserStore = ReactFlux.createStore({
 				},
 				data : payload
 			},UserConstants.UPDATE_SUCCESS);
+			
 			this.persist();
 		}
 		
@@ -241,14 +267,27 @@ let UserStore = ReactFlux.createStore({
 		
 		KeystackUtils.log("UserStore.handleUpdateAvatarFailure", error);
 		
-		let { err } = error.details.body
-		
-		this.setState({
-			status: {
-				loading : false,
-				error : err,
-			}
-		},UserConstants.UPDATE_AVATAR_FAIL);
+		try{
+			let { error } = err.details.body;
+
+			this.setState({
+				status: {
+					loading : false,
+					error : error,
+				},
+			},UserConstants.UPDATE_AVATAR_FAIL);
+
+		}catch(e){
+
+			this.setState({
+				status: {
+					loading : false,
+					error : 'NETWORK ERROR',
+				}
+			},UserConstants.UPDATE_AVATAR_FAIL);
+		}
+
+
 	}],
 
 
@@ -267,6 +306,7 @@ let UserStore = ReactFlux.createStore({
 
 
 	[UserConstants.CREATE_SUCCESS, function handleCreateSuccess(payload){
+		
 		KeystackUtils.log("UserStore.handleCreateSuccess", payload);
 		
 		this.setState({
@@ -286,14 +326,25 @@ let UserStore = ReactFlux.createStore({
 		
 		KeystackUtils.log("UserStore.handleCreateFailure", err);
 
-		let { error } = err.details.body;
-		
-		this.setState({
-			status: {
-				loading : false,
-				error : error || "Error creating user, check your information!",
-			},
-		},UserConstants.CREATE_FAIL);
+		try{
+			let { error } = err.details.body;
+
+			this.setState({
+				status: {
+					loading : false,
+					error : error || "Error creating user, check your information!",
+				},
+			},UserConstants.CREATE_FAIL);
+
+		}catch(e){
+
+			this.setState({
+				status: {
+					loading : false,
+					error : "Error creating user, check your information!",
+				},
+			},UserConstants.CREATE_FAIL);
+		}
 	}]
 
 	

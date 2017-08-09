@@ -1,9 +1,9 @@
-npimport ReactFlux from 'keystack-react-flux';
+import ReactFlux from 'keystack-react-flux';
 import AppConstants from '../constants/AppConstants';
 import UserActions from '../actions/UserActions';
 import _ from 'lodash';
 
-var ApplicationStateStore = ReactFlux.createStore({
+let ApplicationStateStore = ReactFlux.createStore({
 
 	getInitialState: function(){
 

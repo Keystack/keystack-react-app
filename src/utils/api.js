@@ -3,7 +3,8 @@ import nocache from 'superagent-no-cache';
 import ReactFlux from 'keystack-react-flux';
 import apiConstants from '../constants/ApiConstants';
 import KeystackUtils from '../utils/keystack-utils';
-
+import CalucroApi from '../utils/calucro-api';
+import _ from 'lodash'
 
 const DEV_MODE = (KeystackUtils.DEV_ENV && KeystackUtils.LOG_SETTINGS.API);
 
@@ -14,7 +15,7 @@ let Api = (function(){
         ( window.location.origin === "http://localhost:3010") 
             ? 'http://localhost' : 'http://192.168.1.6';
 
-    let BASEURL = "https://keystack.herokuapp.com"
+    let BASEURL = "https://calucro-staging.herokuapp.com"
     let API_URL = '/api/';
     let API_PORT = "3000";
     let TIMEOUT = 10000;
@@ -358,7 +359,6 @@ let Api = (function(){
 }());
 
 
-
-module.exports = Api;
+module.exports = _.assign({},CalucroApi,Api);
 
 
