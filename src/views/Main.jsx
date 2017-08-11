@@ -14,6 +14,7 @@ import NumbersStore from '../stores/NumbersStore';
 import UserActions from '../actions/UserActions';
 import LeadsActions from '../actions/LeadsActions';
 import NumbersActions from '../actions/NumbersActions';
+import $ from 'jquery'
 
 
 const MyTab = (props) => {
@@ -44,16 +45,24 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     NumbersStore.onChange(this.onNumberChange);
+    $(window).on('resize',this.onResize);
   }
 
   componentDidMount() {
     // Fetch Required info from server
     LeadsActions.get();
     NumbersActions.get();
+
   }
 
   componentWillUnmount() {
     NumbersStore.offChange(this.onNumberChange);
+    $(window).off('resize',this.onResize);
+  }
+
+  onResize=()=>{
+    this.forceUpdate();
+    console.log('resize')
   }
 
   onNumberChange=(evt)=>{
@@ -125,7 +134,7 @@ export default class Main extends React.Component {
     if( activeLine )
       rightButton = (
        <Button ripple modifier="quiet" onClick={this.onPhoneSelectTap}>
-          <span style={{color:"white"}}>{activeLine.name}</span>
+          <span style={{color:"white"}}>{activeLine.national_number}</span>
         </Button>
       );
 
@@ -162,6 +171,8 @@ export default class Main extends React.Component {
   }
 
   render() {
+
+    console.log('Main.render()')
 
     const titles = ['Text', 'Dial','Settings'];
 

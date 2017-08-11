@@ -5,26 +5,14 @@ const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
 
-const postcssPlugins = [
-  require('postcss-cssnext')(),
-  require('postcss-modules-values')
-];
-
 const scssLoader = [
   { loader: 'style-loader' },
   { loader: 'css-loader' },
   { loader: 'sass-loader' }
 ];
 
-const postcssLoader = [
-  { loader: 'style-loader' },
-  { loader: 'css-loader', options: { modules: true } },
-  { loader: 'postcss-loader', options: { plugins: () => [...postcssPlugins] } }
-];
-
 const config = {
   entry : [
-    'react-hot-loader/patch',
     path.join(__dirname, '/src/index.js')
   ],
   resolve: {
@@ -44,28 +32,14 @@ const config = {
   plugins: [
     //Minify the bundle
     new webpack.optimize.UglifyJsPlugin({
-      mangle: true,
       compress: {
-        warnings: false,
-        sequences: true,
-        dead_code: true,
-        conditionals: true,
-        booleans: true,
-        unused: true,
-        if_return: true,
-        join_vars: true,
-        //drop_console: true
+        warnings: false        
       }
     }),
     // Moves files
     new TransferWebpackPlugin([
       {from: '../wwwDev'},
     ], path.resolve(__dirname, "src")),
-    new webpack.DefinePlugin({
-        'process.env': {
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        },
-    })
   ],
   module: {
     rules: [
@@ -79,9 +53,14 @@ const config = {
       loader: scssLoader,
       include: [__dirname]
     },
-    { test: /\.css$/,
-      loader: postcssLoader,
-      include: [__dirname]
+    // { test: /\.css$/,
+    //   loader: postcssLoader,
+    //   include: [__dirname]
+    // },
+    { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+    {
+      test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+      use: [ 'file-loader' ]
     },
     {
       test: /\.(jpe?g|png|gif|svg)$/i,

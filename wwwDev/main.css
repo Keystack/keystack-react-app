@@ -43,14 +43,13 @@ div {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-textarea,
+/*textarea,
 input.text,
 input[type="text"],
 input[type="button"],
 input[type="submit"],
 input[type=number],
-input[type=password] {   
-    /* Remove First */
+input[type=password] {  
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -59,8 +58,7 @@ input[type=password] {
     background: transparent;
     outline: none;
     border:none;
-    
-}
+}*/
 
 
 @font-face {
@@ -330,11 +328,8 @@ ul{
   display: inline-block;
   width: 30%;
   max-width: 200px;
-  height:1em;
-  padding-top:1em;
-  padding-bottom:1em;
-  margin-bottom:1%;
-  font-size: 2em
+  padding:1%;
+  font-size: 2.75em
 }
 .last{
   clear: left;
@@ -348,8 +343,7 @@ ul{
   height: 2em;
   text-align: center;
   padding: .5em 0em;
-  margin-top: 1em;
-  margin-bottom: 1%;
+  background:#ececec;
   font-size: 2em;
   font-family: "Helvetica Neue";
   font-weight: 100;
@@ -407,6 +401,13 @@ ul{
   max-width: 610px;
   margin: 0 auto;
 }
+
+.dialpad{
+  position: absolute;
+  width: 100%;
+  bottom:0px;
+}
+
 .dialpad.deactive{
   opacity: .2;
 }
@@ -414,9 +415,6 @@ ul{
 .dialpad li{
   font-weight: bold;
   color:#009688;
-}
-.dialpad li:hover{
-  background: #ccc;
 }
 
 

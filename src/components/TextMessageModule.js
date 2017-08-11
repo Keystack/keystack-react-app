@@ -57,7 +57,7 @@ export default class TextMessageModule extends React.Component {
       user: UserStore.get('data'),
       vcards : VcardStore.getVcards(),
     	interactions : this.props.interactions || [],
-      height: window.innerHeight - 55 + "px",
+      height: window.innerHeight - 60 + "px",
       throttledResize:debounce(100,false,this.resizeEvent),
       contactModalOpen : false,
       attachModalOpen : false
@@ -162,7 +162,7 @@ export default class TextMessageModule extends React.Component {
 
   resizeEvent(){
       this.setState({
-        height:window.innerHeight-55 + "px"
+        height:window.innerHeight-60 + "px"
       });
   }
 

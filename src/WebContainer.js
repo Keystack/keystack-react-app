@@ -1,7 +1,6 @@
 import React from 'react';
-import { hashHistory, Route } from 'react-router';
+import { Route } from 'react-router';
 import { Router , HashRouter, Switch, Redirect } from 'react-router-dom';
-
 import {requireAuth,routeSignUp} from  './utils/route-validations';
 
 import Main    from  './views/Main';

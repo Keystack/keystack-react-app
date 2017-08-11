@@ -16,7 +16,6 @@ export default class Login extends React.Component {
   }
 
   renderToolbar = () => {
-    // const titles = ['Text', 'Dial','Leads'];
     return (
       <Toolbar>
         <div className='center'>
@@ -27,8 +26,6 @@ export default class Login extends React.Component {
   }
 
   componentDidMount() {
-
-    console.log(this.context.router)
 
     if( auth.isAuth() ){
       // this.context.router.transitionTo("/")
@@ -46,7 +43,7 @@ export default class Login extends React.Component {
     const titles = ['Text', 'Dial','Settings'];
 
     return (
-      <Page renderToolbar={this.renderToolbar}>
+      <Page >
         <LoginFormModule onSuccess={this.onLoginSuccess} />
       </Page>     
     );

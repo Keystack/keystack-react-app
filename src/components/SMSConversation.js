@@ -117,7 +117,7 @@ export default class SMSConversation extends React.Component {
     this.resizeEvent = this.resizeEvent.bind(this);
 
     this.state = {
-    	height: window.innerHeight - 130 + "px",
+    	height: window.innerHeight - 90 + "px",
     	throttledResize:debounce(100,false,this.resizeEvent),
     	interactions : props.interactions.reverse() || []
     };
@@ -134,7 +134,7 @@ export default class SMSConversation extends React.Component {
 
   resizeEvent(){
       this.setState({
-        height:window.innerHeight-130 + "px"
+        height:window.innerHeight-90 + "px"
       });
   }
 

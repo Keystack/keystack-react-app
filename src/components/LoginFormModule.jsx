@@ -15,10 +15,15 @@ const styles = {
     textAlign : 'left !important',
   },
   input : {
-    border: "solid 1px #ccc",
     width: "100%",
-    textAlign : 'left !important',
-    background: 'transparent'
+    marginBottom:"20px",
+    fontSize:"16px"
+  },
+  header:{
+    textAlign:"center",
+    backgroundSize:"cover",
+    backgroundImage:`url('${require('../assets/phonegirl.png')}')`,
+    height:(window.innerHeight/2)
   }
 };
 
@@ -104,27 +109,39 @@ export default class LoginFormModule extends React.Component {
 
   render() {
     return (
-      <div className="container" style={styles.container}>        
+      <div>
+        <div style={styles.header}>
+          <h1 style={{lineHeight:(window.innerHeight/2)+"px",fontWeight:700,padding:0,margin:0,color:"white",textShadow:"5px 5px 5px rgba(0,0,0,0.6)", fontSize:"4em"}}>Calucro</h1>
+        </div>
+        <div className="container" style={styles.container}>
+      
           <div className="col-md-6 col-md-offset-3">
-            <ControlLabel>{this.state.errorMsg}</ControlLabel>
-            <p>
-              <Input
-                style={styles.input}
-                width
-                value={this.state.email}
-                onChange={this.handleChangeEmail} 
-                placeholder='Email' />
-            </p>
-            <p>
-              <Input
-                style={styles.input}
-                value={this.state.password}
-                onChange={this.handleChangePassword}                
-                type='password'
-                placeholder='Password' />
-            </p>
+                <ControlLabel>{this.state.errorMsg}</ControlLabel>
 
-            <Button className="col-md-3 pull-right" modifier='large' onClick={this.onSubmit}>Login</Button>
+                <p>
+                  <Input
+                    style={styles.input}
+                    width
+                    value={this.state.email}
+                    onChange={this.handleChangeEmail} 
+                    placeholder='Email' />
+                </p>
+                <p>
+                  <Input
+                    style={styles.input}
+                    value={this.state.password}
+                    onChange={this.handleChangePassword}                
+                    type='password'
+                    placeholder='Password' />
+                </p>
+          </div>
+            
+            <div className="row">
+              <div className="col-md-6 col-md-offset-3">
+                <Button modifier='large'  onClick={this.onSubmit}>Login</Button>
+                <Button modifier='quiet large'>Create an account</Button>
+              </div>
+            </div>
         </div>
       </div>
     );

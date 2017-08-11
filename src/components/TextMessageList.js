@@ -15,7 +15,6 @@ const styles = {
 	message_text : {
 	    textOverflow: "ellipsis",
 	    whiteSpace: "nowrap",
-	    width: "320px",
 	    overflow: "hidden",
 	},
 	divider:{
@@ -35,7 +34,6 @@ const styles = {
 		maxHeight:"80px"
 	},
 	listItemActive:{
-		minWidth:"32rem",
 		height:"80px",
 		maxHeight:"80px",
 		backgroundColor: "#2c3e50 !important"
@@ -67,7 +65,7 @@ export default class TextMessageList extends React.Component {
     this.resizeEvent = this.resizeEvent.bind(this);
 
     this.state = {
-    	height: window.innerHeight - 100 + "px",
+    	height: window.innerHeight - 105 + "px",
     	throttledResize:debounce(100,false,this.resizeEvent)
     };
   }
@@ -82,7 +80,7 @@ export default class TextMessageList extends React.Component {
 
   resizeEvent(){
       this.setState({
-        height:window.innerHeight-144 + "px"
+        height:window.innerHeight-105 + "px"
       });
   }
 
