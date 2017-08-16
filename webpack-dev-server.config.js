@@ -4,23 +4,11 @@ const buildPath = path.resolve(__dirname, 'www');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
-
-const postcssPlugins = [
-  require('postcss-cssnext')(),
-  require('postcss-modules-values')
-];
-
 const scssLoader = [
   { loader: 'style-loader' },
   { loader: 'css-loader' },
   { loader: 'sass-loader' }
-];
-
-const postcssLoader = [
-  { loader: 'style-loader' },
-  { loader: 'css-loader', options: { modules: true } },
-  { loader: 'postcss-loader', options: { plugins: () => [...postcssPlugins] } }
-];
+];  
 
 const config = {
   entry : [
@@ -38,7 +26,7 @@ const config = {
   devServer : {
     contentBase: 'wwwDev',
     devtool: 'eval',
-    // hot: true,     
+     // hot: true,     
     inline: true,
     port: 3009,     
     host: '0.0.0.0',

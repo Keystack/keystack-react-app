@@ -79,9 +79,14 @@ const config = {
       loader: scssLoader,
       include: [__dirname]
     },
-    { test: /\.css$/,
-      loader: postcssLoader,
-      include: [__dirname]
+    // { test: /\.css$/,
+    //   loader: postcssLoader,
+    //   include: [__dirname]
+    // },
+    { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+    {
+      test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+      use: [ 'file-loader' ]
     },
     {
       test: /\.(jpe?g|png|gif|svg)$/i,

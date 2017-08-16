@@ -3,8 +3,11 @@ import ons from 'onsenui';
 import { Page, Button,Tabbar,Tab,Toolbar, ToolbarButton, Select, 
     Icon, Splitter, SplitterContent, SplitterSide, List} from 'react-onsenui';
 
+import ks from '../utils/keystack-utils';
+
 import Dialer from './Dialer';
 import TextOverview from './TextOverview';
+import InteractionOverview from './InteractionOverview';
 import NumberSelectModule from '../components/NumberSelectModule';
 
 import UserStore from '../stores/UserStore';
@@ -14,6 +17,9 @@ import NumbersStore from '../stores/NumbersStore';
 import UserActions from '../actions/UserActions';
 import LeadsActions from '../actions/LeadsActions';
 import NumbersActions from '../actions/NumbersActions';
+
+
+import $ from 'jquery'
 
 
 const MyTab = (props) => {
@@ -29,31 +35,44 @@ const MyTab = (props) => {
 };
 
 export default class Main extends React.Component {
-  
-  state = { 
-    index: 1,
-    showPullOutMenu: false, 
-    isOpen:false, 
-    selectNumber:false, 
-    activeLine: NumbersStore.getActiveLine() 
-  }
+
 
   constructor(props) {
     super(props);
+
+    let route = props.location.pathname.split("/");
+    let index = parseInt((route.length>2)?1:route[route.length-1]);
+
+    this.state = { 
+      index: index,
+      showPullOutMenu: false, 
+      isOpen:false, 
+      selectNumber:false, 
+      activeLine: NumbersStore.getActiveLine() 
+    };
+
   }
 
   componentWillMount() {
     NumbersStore.onChange(this.onNumberChange);
+    $(window).on('resize',this.onResize);
   }
 
   componentDidMount() {
     // Fetch Required info from server
     LeadsActions.get();
     NumbersActions.get();
+
   }
 
   componentWillUnmount() {
     NumbersStore.offChange(this.onNumberChange);
+    $(window).off('resize',this.onResize);
+  }
+
+  onResize=()=>{
+    this.forceUpdate();
+    console.log('resize')
   }
 
   onNumberChange=(evt)=>{
@@ -72,7 +91,7 @@ export default class Main extends React.Component {
     console.log(conversation)
 
     if(conversation)
-      this.props.history.push('conversation/'+conversation.lead_id);
+      this.props.history.push('/conversation/'+conversation.lead_id);
   }
 
   onPhoneSelectTap=()=>{
@@ -125,7 +144,7 @@ export default class Main extends React.Component {
     if( activeLine )
       rightButton = (
        <Button ripple modifier="quiet" onClick={this.onPhoneSelectTap}>
-          <span style={{color:"white"}}>{activeLine.name}</span>
+          <span style={{color:"white"}}>{activeLine.national_number}</span>
         </Button>
       );
 
@@ -147,16 +166,26 @@ export default class Main extends React.Component {
   renderTabs=()=>{
     return [
       {
-        content: <TextOverview key={0}  onSMSTap={this.onSMSTap}  />,
+        content: 
+          <TextOverview key={0}  
+            onMenuTap={this.onMenuTap}
+            onPhoneSelectTap={this.onPhoneSelectTap} 
+            onSMSTap={this.onSMSTap}  />,
         tab: <Tab key={0} label='Text' badge={1} icon='ion-android-textsms' />
       },
       {
-        content: <Dialer key={1}/>,
-        tab: <Tab key={1} label='Dial' icon='md-dialpad'/>
+        content: 
+          <Dialer key={1} 
+            onMenuTap={this.onMenuTap}
+            onPhoneSelectTap={this.onPhoneSelectTap}  />,
+        tab: <Tab key={1} label='Dial' icon='ion-ios-keypad'/>
       },
       {
-        content: <MyTab key={2}   content="Change the settings" />,
-        tab: <Tab key={2} label='Settings' icon='ion-settings' />
+        content: 
+          <InteractionOverview key={2}
+            onMenuTap={this.onMenuTap}
+            onPhoneSelectTap={this.onPhoneSelectTap}  />,
+        tab: <Tab key={2} label='Call Log' icon='ion-android-list' />
       }
     ];
   }
@@ -181,7 +210,7 @@ export default class Main extends React.Component {
           </Page>
         </SplitterSide>
         <SplitterContent>
-          <Page modifier="material" renderToolbar={this.renderToolbar}>
+          <Page modifier="material" >
             
             <NumberSelectModule 
               onSelect={this.onNumberSelect}
@@ -196,6 +225,7 @@ export default class Main extends React.Component {
               onPreChange={ (event) => {
                   if (event.index !== this.state.index) {
                     this.setState({index: event.index});
+                    this.props.history.push('/'+event.index);
                   }
                 }
               }

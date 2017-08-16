@@ -1,8 +1,11 @@
 import React from 'react';
-import DialPad from '../components/DialPad';
-import {Page,Button} from 'react-onsenui';
+import { Redirect } from 'react-router-dom';
+import {Page,Button,Toolbar,ToolbarButton,Icon} from 'react-onsenui';
 import TextMessageList from '../components/TextMessageList';
 import TextMessageModule from '../components/TextMessageModule';
+
+import ListGroup from 'react-bootstrap/lib/ListGroup';
+import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 
 import LeadsStore from '../stores/LeadsStore';
 import LeadsActions from '../actions/LeadsActions';
@@ -13,6 +16,7 @@ import InteractionsConstants from '../constants/InteractionsConstants';
 
 import NumbersStore from '../stores/NumbersStore';
 import NumbersActions from '../actions/NumbersActions';
+import NumbersConstants from '../constants/NumbersConstants';
 
 export default class TextOverview extends React.Component {
 
@@ -35,8 +39,8 @@ export default class TextOverview extends React.Component {
       selectedNumber : "",      
       selectedIndex : -1,
       isLoadingLeads : false,
-      isLoadingMessages : false,
-      isLoadingInteractions : false
+      newMessage :false,
+      isLoadingMessages : true
     }
   }
 
@@ -46,22 +50,24 @@ export default class TextOverview extends React.Component {
   }
 
   componentDidMount() {
-
-    this.setState({
-      isLoadingMessages : true,
-    });
     
     let numbers = NumbersStore.getNumbers();
     let activeLine = NumbersStore.getActiveLine();
-    
-    if( numbers.length === 0 ){
+
+    if( numbers.length === 0 || activeLine === null ){
       // Fetch Calucro Numbers
       NumbersActions.get();
     }
     else{
+
+      this.setState({
+        isLoadingMessages : true,
+        activeLine : activeLine
+      });
+
       // Fetch new text message overview
       InteractionsActions.getTextOverview({
-        calucro_id:activeLine
+        calucro_id : activeLine
       });
     }
   }
@@ -71,55 +77,75 @@ export default class TextOverview extends React.Component {
     NumbersStore.offChange(this._onNumbersChangeEvent);
   }
 
+  onCreateMessage=()=>{
+    this.setState({
+      newMessage :true
+    })
+  }
+
   _onLeadsChangeEvent=()=>{
     
     let leads = LeadsStore.getLeads();
     
     this.setState({
       leads: leads,
-      isLoadingLeads : false,
+      isLoadingLeads : false
     });
   }
 
-  _onInteractionsChangeEvent=()=>{
+  _onInteractionsChangeEvent=( evt )=>{
 
     let selectedIndex = this.state.selectedIndex;
-    let messages = 
+
+    if( evt.type === InteractionsConstants.TEXT_MESSAGE_OVERVIEW){
+      
+      let interactionState = 
       InteractionsStore.getActionState(
-        InteractionsConstants.TEXT_MESSAGE_OVERVIEW,
-        "overview");
+        InteractionsConstants.TEXT_MESSAGE_OVERVIEW);
 
-    if( messages !== this.state.messages ){
+      let {overview,success} = interactionState;
 
-      if( this.state.convoLeadId ){
-        selectedIndex = InteractionsStore.getTextIndexByLeadId(this.state.convoLeadId);
+      if( success ){
+
+          if( this.state.convoLeadId ){
+            selectedIndex = 
+              InteractionsStore.getTextIndexByLeadId(this.state.convoLeadId);
+          }
+
+          this.setState({
+            messages : overview,
+            selectedIndex : selectedIndex,
+            isLoadingMessages : false
+          });
       }
 
-      this.setState({
-        messages : messages,
-        selectedIndex : selectedIndex,
-        isLoadingMessages : false
-      });
     }
+
   }
 
-  _onNumbersChangeEvent= () =>{
+  _onNumbersChangeEvent=( evt ) => {
     
     let numbers = NumbersStore.getNumbers();
     let activeLine = NumbersStore.getActiveLine();
-    
-    if( numbers.length && activeLine ){
 
-      let id = activeLine.id || null;
+    if( evt.type === NumbersConstants.GET_SUCCESS ){
 
-      // Fetch new Leads
-      InteractionsActions.getTextOverview({calucro_id:id});
+        console.log(NumbersConstants.GET_SUCCESS,activeLine,this.state.activeLine)
 
-      this.setState({
-        calucroNumbers: numbers,
-        selectedNumber : activeLine
-      });
+        if( activeLine.id !== this.state.activeLine.id ){
+      
+        let id = activeLine.id || null;
+
+        // Fetch new Leads
+        InteractionsActions.getTextOverview({calucro_id:id});
+
+        this.setState({
+          calucroNumbers: numbers,
+          selectedNumber : activeLine
+        });
+      }
     }
+    
   }
 
   onListItemTap=(evt)=>{
@@ -135,19 +161,63 @@ export default class TextOverview extends React.Component {
     }
   }
 
+  renderToolbar = () => {
+
+    let leftButton= null , rightButton = null;
+    let activeLine = NumbersStore.getActiveLine();
+
+    leftButton = (
+        <ToolbarButton  ripple modifier="" onClick={this.props.onMenuTap}>
+          <Icon icon='ion-android-menu' style={{color:"white"}}></Icon>
+        </ToolbarButton>
+    );
+
+    if( activeLine ){
+      rightButton = (
+       <ToolbarButton ripple onClick={this.onCreateMessage}>
+          <Icon icon="ion-ios-compose"></Icon>
+        </ToolbarButton>
+      );
+    }
+
+    return (
+      <Toolbar modifier="material">
+        <div className='left'>
+          {leftButton}
+        </div>
+        <div className='center'>
+          Messages
+        </div>
+        <div className='right'>
+          {rightButton}
+        </div>
+      </Toolbar>
+    );
+  }
+
   render() {
     
     let content;
     let lead = LeadsStore.getLeadById(this.state.convoLeadId);
 
+    if( this.state.newMessage ){
+      return(
+        <Redirect to={{
+          pathname: '/conversation/new/',
+          state: { from: this.props.location }
+        }}/>
+      )
+    }
+
     content = (
-      <TextMessageList 
+      <TextMessageList
+        loading={this.state.isLoadingMessages} 
         data={this.state.messages} 
         onItemTap={this.onListItemTap} />
     );
       
     return (
-      <Page >
+      <Page renderToolbar={this.renderToolbar}>
       	{content}
       </Page>
     );

@@ -9,7 +9,7 @@ import auth from '../utils/auth';
 
 export default class Login extends React.Component {
   
-  state = { index: 1}
+  state = { index: 1 }
 
   constructor(props) {
     super(props);
@@ -43,8 +43,8 @@ export default class Login extends React.Component {
 
   render() {
 
-    const titles = ['Text', 'Dial','Settings'];
-
+    console.log('logins')
+    
     return (
       <Page renderToolbar={this.renderToolbar}>
         <LoginFormModule onSuccess={this.onLoginSuccess} />

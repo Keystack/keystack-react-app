@@ -19,10 +19,6 @@ const style ={
 }
 
 export default class Conversation extends React.Component {
-  static propTypes = {
-    name: React.PropTypes.string,
-  }
-
 
   constructor(props) {
     super(props);
@@ -34,6 +30,7 @@ export default class Conversation extends React.Component {
 
     this.state = {
     	leadId : id,
+      isLoading: true,
     	lead : lead || null,
     };
   }
@@ -45,9 +42,15 @@ export default class Conversation extends React.Component {
   componentDidMount() {
 
   	let activeLine = NumbersStore.getActiveLine();
+
+    console.log('Conversation.cdm',activeLine)
   	
-  	if( activeLine )
-  		LeadsActions.get(activeLine.id)
+  	if( activeLine ){
+  		LeadsActions.get(activeLine.id);
+      this.setState({
+        isLoading: true
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -60,7 +63,8 @@ export default class Conversation extends React.Component {
 
   	if( lead ){
   		this.setState({
-	  		lead : lead
+	  		lead : lead,
+        isLoading:false
 	  	});
   	}else{
   		this.props.history.push('/');
@@ -74,6 +78,9 @@ export default class Conversation extends React.Component {
 
   renderToolbar = () => {
 
+    let {first_name,last_name,formatted_phone} = this.state.lead || {};
+    let name = first_name + last_name;
+
     return (
       <Toolbar modifier="material">
         <div className='left'>
@@ -82,7 +89,7 @@ export default class Conversation extends React.Component {
           </ToolbarButton>
         </div>
         <div className='center'>
-          Test
+          {(name)?name:formatted_phone}
         </div>
       </Toolbar>
     );
@@ -91,8 +98,8 @@ export default class Conversation extends React.Component {
   render() {
   	let content;
 
-  	if(this.state.lead){
-  		content = <TextMessageModule data={this.state.lead}/>
+  	if( !this.state.isLoading ){
+  		content = <TextMessageModule data={this.state.lead} />
   	}else{
   		content = 
   			<div style={style.progressBar}>

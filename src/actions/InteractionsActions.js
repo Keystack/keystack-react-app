@@ -37,9 +37,9 @@ let InteractionsActions = ReactFlux.createActions({
         return Api.getInteractions(options);
     }],
 
-    getLatest : [InteractionsConstants.GET_LATEST, function getLatestInteractions(){
+    getLatest : [InteractionsConstants.GET_LATEST, function getLatestInteractions(type){
         // Make API CALL
-        return Api.getLatestInteractions();
+        return Api.getLatestInteractions(type);
     }]
 });
 

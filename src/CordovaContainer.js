@@ -3,17 +3,19 @@ import { hashHistory, Route } from 'react-router';
 import { Router , HashRouter, Switch, Redirect } from 'react-router-dom';
 
 import {requireAuth,routeSignUp} from  './utils/route-validations';
-import { ThemeProvider } from 'react-css-themr';
-import theme from './theme/themes';
 
-import Login   from  './views/Login';
 import Main    from  './views/Main';
+import Login from  './views/Login';
+import Profile from  './views/Profile';
+import Conversation from './views/Conversation';
 
-import UserActions  from './actions/UserActions';
 import UserStore    from './stores/UserStore';
 
-import auth from './utils/auth';
+import UserActions  from './actions/UserActions';
+import NumbersActions from './actions/NumbersActions';
+import LeadsActions from './actions/LeadsActions';
 
+import auth from './utils/auth';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={props => (
@@ -26,8 +28,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
       }}/>
     )
   )}/>
-)
-
+);
 
 export default class CordovaContainer extends React.Component {
 
@@ -60,26 +61,12 @@ export default class CordovaContainer extends React.Component {
 
 
   componentDidMount(){
+    
     document.addEventListener("deviceready",this.onDeviceReady);
 
     if( UserStore.isAuth() ){
         UserActions.get();
      }
-
-   // TODO : REMOVE  
-   // UserActions.create({
-   //    email:'d3@keystack.com',
-   //    password:'password23e32',
-   //    first: 'Devery',
-   //    last: 'Channell',
-   //    phone: '469-235-8390',
-   //    college: 'UTD @ A' 
-   //  });
-   // UserActions.logout(); 
-   // UserActions.login('d1@keystack.com','password23e32')
-   // UserActions.get()
-   // UserActions.update(UserStore.getData());
-
   }
 
   componentWillUnmount() {
@@ -116,14 +103,14 @@ export default class CordovaContainer extends React.Component {
 
     return (
       <HashRouter >
-        <ThemeProvider theme={theme} >
           <main>
             <Switch>
-              <Route exact path='/' component={Main}/>
+              <PrivateRoute exact path='/' component={Main}/>
+              <PrivateRoute path='/conversation/:id' component={Conversation} />
+              <Route path='/login' component={Login} />
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>
-          </main>    
-        </ThemeProvider>
+          </main> 
       </HashRouter>
     );
   }

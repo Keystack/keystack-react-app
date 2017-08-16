@@ -39,7 +39,6 @@ export default class TextMessageModule extends React.Component {
     this.onLeadsStoreChange = this.onLeadsStoreChange.bind(this);
     this.onMessageSend = this.onMessageSend.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.resizeEvent = this.resizeEvent.bind(this);
 
     this.onAttachContact = this.onAttachContact.bind(this);
     this.onAttachImage = this.onAttachImage.bind(this);
@@ -52,13 +51,14 @@ export default class TextMessageModule extends React.Component {
 
     this.onVcardStoreChange = this.onVcardStoreChange.bind(this);
 
+    this.resizeEvent = (debounce(100,false,this.onResizeEvent)).bind(this);
+
     this.state = {
     	lead : props.data,
       user: UserStore.get('data'),
       vcards : VcardStore.getVcards(),
     	interactions : this.props.interactions || [],
-      height: window.innerHeight - 55 + "px",
-      throttledResize:debounce(100,false,this.resizeEvent),
+      height: window.innerHeight - 60 + "px",
       contactModalOpen : false,
       attachModalOpen : false
     };
@@ -70,18 +70,15 @@ export default class TextMessageModule extends React.Component {
 
   	InteractionsStore.onChange(this.onInteractionsStoreChange);
     VcardStore.onChange(this.onVcardStoreChange);
-    
-  
-     $(window).on('resize',this.state.throttledResize);
+    window.addEventListener('resize',this.resize);
   }
 
 
   componentWillUnmount() {
     InteractionsStore.offChange(this.onInteractionsStoreChange);
     VcardStore.offChange(this.onVcardStoreChange);
+    window.removeEventListener('resize',this.resize);
 
-
-    $(window).off('resize',this.state.throttledResize);
     clearInterval(this.pollInterval);
   }
 
@@ -108,6 +105,12 @@ export default class TextMessageModule extends React.Component {
 
     }
 
+  }
+
+  onResizeEvent(){
+      this.setState({
+        height:window.innerHeight-60 + "px"
+      });
   }
 
   onAttachImage(){
@@ -157,13 +160,6 @@ export default class TextMessageModule extends React.Component {
     this.setState({
       attachModalOpen: false
     })
-  }
-
-
-  resizeEvent(){
-      this.setState({
-        height:window.innerHeight-55 + "px"
-      });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -263,28 +259,22 @@ export default class TextMessageModule extends React.Component {
           onClose={this.closeAttachModal}
           onSave={this.onAttachImage} />
 
-      	<div style={{position:"fixed",bottom:"0px",background:"#fff",borderTop:"1px solid #eee"}}>
-  	  		
-          <FormGroup style={{marginBottom:"0px"}}>
-          
-          <InputGroup> 
-            
-            <DropdownButton
-                dropup
-                style={{backgroundColor:"white",border:"none",color:"#666",fontSize:"16px"}}
-                id="message-attach-button"
-                componentClass={InputGroup.Button}
-                title="">
-              <MenuItem key="1" style={{borderTopLeftRadius:"0px"}} onClick={this.onAttachContactSelect}>Contact Card</MenuItem>
-              <MenuItem key="2" style={{}} onClick={this.onAttachImageSelect}>Image</MenuItem>
-            </DropdownButton>
-
-            <FormControl 
-              onKeyDown={this.handleKeyPress} 
-              inputRef={ref => { this.messageText = ref; }} 
-              type="text" 
-              /> 
-
+      	<div style={{position:"fixed",bottom:"0px",background:"#fff",borderTop:"1px solid #eee"}}>  	  		
+          <FormGroup style={{marginBottom:"0px"}}>          
+            <InputGroup>             
+              <DropdownButton
+                  dropup
+                  style={{backgroundColor:"white",border:"none",color:"#666",fontSize:"16px"}}
+                  id="message-attach-button"
+                  componentClass={InputGroup.Button}
+                  title="">
+                <MenuItem key="1" style={{borderTopLeftRadius:"0px"}} onClick={this.onAttachContactSelect}>Contact Card</MenuItem>
+                <MenuItem key="2" style={{}} onClick={this.onAttachImageSelect}>Image</MenuItem>
+              </DropdownButton>
+              <FormControl 
+                onKeyDown={this.handleKeyPress} 
+                inputRef={ref => { this.messageText = ref; }} 
+                type="text" /> 
               <Button
                 bsStyle="primary"
   		        	onClick={this.onMessageSend}
@@ -293,9 +283,7 @@ export default class TextMessageModule extends React.Component {
   		          id="input-button-addon">
                   Send
   		        </Button>
-
-  		      </InputGroup>
-
+    		    </InputGroup>
   		    </FormGroup>
       	</div>
       </div>

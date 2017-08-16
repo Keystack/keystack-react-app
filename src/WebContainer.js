@@ -8,6 +8,7 @@ import Main    from  './views/Main';
 import Login from  './views/Login';
 import Profile from  './views/Profile';
 import Conversation from './views/Conversation';
+import NewTextMessageModule from './components/NewTextMessageModule';
 
 import UserStore    from './stores/UserStore';
 
@@ -45,14 +46,16 @@ export default class WebContainer extends React.Component {
 
   render() {
 
-    let user = UserStore.getData();
+    // let user = UserStore.getData();
 
     return (
       <HashRouter >
           <main>
             <Switch>
               <PrivateRoute exact path='/' component={Main}/>
-              <PrivateRoute path='/conversation/:id' component={Conversation} />
+              <PrivateRoute exact path='/:id' component={Main}/>
+              <PrivateRoute exact path='/conversation/new' component={NewTextMessageModule} />
+              <PrivateRoute exact path='/conversation/:id' component={Conversation} />
               <Route path='/login' component={Login} />
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>

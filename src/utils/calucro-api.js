@@ -1447,6 +1447,7 @@ let Api = {
         options = options || {
             calucroID : null,
             type : null,
+            to : null,
             text: null,
             lead_id : null,
             v_card_id : null
@@ -1500,6 +1501,7 @@ let Api = {
                 .send({
                     calucro_number_id:options.calucroID,
                     type: options.type,
+                    to: options.to,
                     text: options.text,
                     v_card_id:options.v_card_id,
                     lead_id: options.lead_id})
@@ -1512,7 +1514,7 @@ let Api = {
     },
 
 
-    getLatestInteractions : function(){
+    getLatestInteractions : function( type ){
 
         let auth_token = localStorage.token;
         let email = localStorage.email;
@@ -1557,11 +1559,11 @@ let Api = {
         };
 
         // create a pending request and make call to api
-        _pendingRequests[key] = 
+        _pendingRequests[key] =     
             request
                 .get(url)
                 .use(nocache)
-                .query({k:"latest"})
+                .query({type:type})
                 .timeout(TIMEOUT)
                 .set("X-USER-TOKEN",auth_token)
                 .set("X-USER-EMAIL",email)
