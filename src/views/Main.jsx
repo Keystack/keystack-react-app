@@ -38,10 +38,10 @@ export default class Main extends React.Component {
     super(props);
 
     let route = props.location.pathname.split("/");
-    let index = parseInt((route.length>2)?1:route[route.length-1]);
-
+    let index = (route.length>2)?route[route.length-1]:1;
+      
     this.state = { 
-      index: index,
+      index: (index)?parseInt(index):1,
       showPullOutMenu: false, 
       isOpen:false, 
       selectNumber:false, 
@@ -84,8 +84,6 @@ export default class Main extends React.Component {
   }
 
   onSMSTap=(conversation)=>{
-
-    console.log(conversation)
 
     if(conversation)
       this.props.history.push('/conversation/'+conversation.lead_id);
@@ -190,6 +188,8 @@ export default class Main extends React.Component {
   render() {
 
     const titles = ['Text', 'Dial','Settings'];
+
+    console.log(this.state.index)
 
     return (
       <Splitter>   

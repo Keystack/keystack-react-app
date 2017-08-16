@@ -1,6 +1,9 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import { Page, ProgressCircular, Button,Toolbar,LazyList,ListItem,ToolbarButton, Icon} from 'react-onsenui';
 import ons from 'onsenui';
+
+import ks from '../utils/keystack-utils';
 
 import LeadsStore from '../stores/LeadsStore';
 import LeadsActions from '../actions/LeadsActions';
@@ -70,12 +73,25 @@ export default class InteractionOverview extends React.Component {
   	}
   }
 
-  onClickCall=(evt)=>{
+  onClickCall(interaction){
+    let number = interaction.incoming_number || interaction.outgoing_number;
 
+    if(number)
+      number = ks.unPrettyNumber(number);
+
+    if(number)
+      window.open('tel:'+number, '_system');
   }
 
-  onClickMsg=(evt)=>{
-  	
+  onClickMsg(interaction){
+
+    console.log(interaction.lead_id);
+
+    if( interaction.lead_id )
+      this.setState({
+        selectedInteractionThread : interaction,
+      });
+
   }
 
   renderToolbar = () => {
@@ -129,21 +145,19 @@ export default class InteractionOverview extends React.Component {
   			? <img style={styles.call_status} src={statusImg} />
   			: <img style={styles.call_status} src={require('../assets/outgoing.png')} />
 
-
-
     return (
       <ListItem modifier='longdivider' key={index}>
       	<div className='left'>{callAvatar}</div>
         <div className='center'>{content}</div>
         <div className='right'>
-        	<Button modifier='quiet' ripple>
-        	 <Icon icon="ion-android-call" size={24} modifier="material" onClick={this.onClickCall}></Icon>
+        	<Button modifier='quiet' value={index} ripple onClick={this.onClickCall.bind(this,interaction)}>
+        	 <Icon icon="ion-android-call" size={24} modifier="material" ></Icon>
         	</Button>
         </div>
         <div className='right'>
         	 
         	 <Button modifier='quiet' ripple>
-        	 	<Icon icon="ion-android-chat" modifier="material" size={24} onClick={this.onClickMsg}></Icon>
+        	 	<Icon icon="ion-android-chat" modifier="material" size={24} onClick={this.onClickMsg.bind(this,interaction)}></Icon>
         	</Button>
         </div>
       </ListItem>
@@ -152,21 +166,32 @@ export default class InteractionOverview extends React.Component {
 
   render() {
 
-  	if( this.state.isLoading ){
+    let { isLoading, selectedInteractionThread, interactions } = this.state;
+
+  	if( isLoading ){
   		return(
   			<Page renderToolbar={this.renderToolbar}>
 	  			<div style={styles.progressBar}>
 	  				<ProgressCircular indeterminate  />
 	  			</div>
       		</Page>
-		);
+		  );
   	}
 
+    if( selectedInteractionThread ){
+      let id = selectedInteractionThread.lead_id;
+      return(
+        <Redirect to={{
+          pathname: '/conversation/'+id,
+          state: { from: this.props.location }
+        }}/>
+      )
+    }
 
     return (
       <Page renderToolbar={this.renderToolbar}>
       	<LazyList
-          length={this.state.interactions.length}
+          length={interactions.length}
           renderRow={this.renderRow}
           calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44}
         />

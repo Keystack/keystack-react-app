@@ -4,6 +4,7 @@ module.exports = ReactFlux.createConstants([
 	'GET',
 	'TEXT_MESSAGES',
 	'TEXT_MESSAGE_OVERVIEW',
+	'NEW_INTERACTION',
 	'GET_LATEST',
 	'GET_BY_ID',
 	'CREATE',

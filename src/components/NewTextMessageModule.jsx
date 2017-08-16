@@ -138,17 +138,24 @@ export default class NewTextMessageModule extends React.Component {
     this.setState({
       messageText : evt.target.value
     });
+  }
 
+  onCloseTap=()=>{
+    // Go to Message Tab on Main View
+    this.props.history.push("/tab/0");
   }
 
   onInteractionsStoreChange=(evt)=>{
 
     console.log("NewTextMessageModule.onInteractionsStoreChange",evt);
     
-    if( evt.type === InteractionsConstants.CREATE_INTERACTION_SUCCESS ){
+    if( evt.type === InteractionsConstants.NEW_INTERACTION ){
 
-      let state = InteractionsStore.getActionState(InteractionsConstants.TEXT_MESSAGES);
+      let {newInteraction} = InteractionsStore.getActionState(InteractionsConstants.NEW_INTERACTION);
 
+      if( newInteraction && newInteraction.lead_id ){
+        this.props.history.push("/conversation/"+newInteraction.lead_id);
+      } 
     } 
   }
 
@@ -199,7 +206,7 @@ export default class NewTextMessageModule extends React.Component {
     let activeLine = NumbersStore.getActiveLine();
 
     leftButton = (
-        <ToolbarButton  ripple modifier="" onClick={this.props.onMenuTap}>
+        <ToolbarButton  ripple modifier="" onClick={this.onCloseTap}>
           <Icon icon='ion-android-close' style={{color:"white"}}></Icon>
         </ToolbarButton>
     );

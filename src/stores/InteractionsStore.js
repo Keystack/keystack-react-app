@@ -69,7 +69,7 @@ let InteractionsStore = ReactFlux.createStore({
 			
 			if( Array.isArray(payload) ){			
 				this.setState({
-					isUpdating: false,
+					loading: false,
 					interactions: payload,
 					error: null
 				});
@@ -87,14 +87,26 @@ let InteractionsStore = ReactFlux.createStore({
 
 		[InteractionsConstants.CREATE_SUCCESS, function handleCreateSuccess(payload){
 
-			console.log(InteractionsConstants.CREATE_SUCCESS,payload)
+			console.log(InteractionsConstants.CREATE_SUCCESS,payload);
+
+			this.setActionState(InteractionsConstants.NEW_INTERACTION,{
+				newInteraction : payload,
+				loading :false,
+				error: null
+			});
 			
 		}],
 
 		[InteractionsConstants.CREATE_FAIL, function handleCreate(payload){
 			
 			console.log(payload);
+
 			// if interaction has failed store messages under failed interactions queue using lead_id
+			this.setActionState(InteractionsConstants.NEW_INTERACTION_FAIL,{
+				loading :false,
+				error: true,
+				details: payload
+			});
 		}],
 
 
@@ -213,7 +225,56 @@ InteractionsStore.addActionHandler(InteractionsConstants.GET_BY_ID, {
 });
 
 
-InteractionsStore.addActionHandler(InteractionsConstants.TEXT_MESSAGES, {
+InteractionsStore.addActionHandler(InteractionsConstants.NEW_INTERACTION, {
+
+	//returns initial state specific only to this handler
+	getInitialState: function(){
+		 return {
+			 loading: true,
+			 error: null,
+			 interactions: [],
+			 success: false
+		};
+	},
+		
+	//this gets called before the action associated with NEW_INTERACTION is executed
+	before: function(){
+		//this inside handler callbacks refers to the action handler itself and not to the store
+		this.setState({
+		 interactions:[],
+		 loading: true,
+		 error: null
+		});
+	},
+	
+	//this gets called after the action associated with NEW_INTERACTION succeeds or fails
+	after: function(){
+		this.setState({
+			loading: false
+		});
+	},
+	
+	//this gets called if the action associated with NEW_INTERACTION succeeds
+	success: function(payload){
+
+		console.log("InteractionsStore.NEW_INTERACTION",payload);
+		
+		
+	},
+	
+	//this gets called if the action associated with GET_LATEST fails
+	fail: function(error){
+		console.warn(error);
+		
+		this.setState({
+			error: error,
+			loading : false
+		});
+	}
+});
+
+
+InteractionsStore.addActionHandler(InteractionsConstants.NEW_INTERACTION, {
 
 	//returns initial state specific only to this handler
 	getInitialState: function(){
@@ -299,8 +360,6 @@ InteractionsStore.addActionHandler(InteractionsConstants.TEXT_MESSAGE_OVERVIEW, 
 	
 	//this gets called if the action associated with TEXT_MESSAGES succeeds
 	success: function(payload){
-
-		console.log("InteractionsStore.TEXT_MESSAGE_OVERVIEW_SUCCESS",payload);
 
 		if(Array.isArray(payload)){
 

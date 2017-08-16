@@ -4,6 +4,8 @@ import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 import {Link} from 'react-router-dom';
 import {ProgressCircular} from 'react-onsenui';
 
+import ks from '../utils/keystack-utils';
+
 import {throttle,debounce} from 'throttle-debounce';
 import _ from "lodash";
 
@@ -57,43 +59,56 @@ const styles = {
 };
 
 
-const UnreadItem = (leadObj)=> (
+const UnreadItem = (leadObj)=> {
 
-	<ListGroupItem  id={leadObj.data.id} className="unread" style={styles.listItemActive} onClick={leadObj.onClick}>
-		
-			<div id={leadObj.data.id}>
+	let number = 
+		(leadObj.data.outgoing_number && !leadObj.data.first_name)
+		? leadObj.data.outgoing_number 
+		: leadObj.data.incoming_number;
+
+	if ( number.length < 14)
+		number = ks.unPrettyNumber(number);
+		return(
+		<ListGroupItem  id={leadObj.data.id} className="unread" style={styles.listItemActive} onClick={leadObj.onClick}>
+			
 				<div id={leadObj.data.id}>
-					{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
-				</div>
+					<div id={leadObj.data.id}> {number}</div>
+					<div id={leadObj.data.id} >
+					{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
+					</div>
+					<div id={leadObj.data.id} style={styles.message_text}>
+					{leadObj.data.message_text}
+					</div>			
+				</div>		
+		</ListGroupItem>
+	)
+};
+
+const ActiveItem = (leadObj)=> {
+
+	let number = 
+		(leadObj.data.outgoing_number && !leadObj.data.first_name)
+		? leadObj.data.outgoing_number 
+		: leadObj.data.incoming_number;
+
+	if ( number.length < 14)
+		number = ks.unPrettyNumber(number);
+
+	return(
+		<ListGroupItem  id={leadObj.data.id} className="unread active" style={styles.listItemActive} onClick={leadObj.onClick}>
+
+			<div id={leadObj.data.id}>
+				<div id={leadObj.data.id}>{number}</div>
 				<div id={leadObj.data.id} >
 				{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
 				</div>
 				<div id={leadObj.data.id} style={styles.message_text}>
 				{leadObj.data.message_text}
-				</div>			
-			</div>
-		
-	</ListGroupItem>
-);
-
-const ActiveItem = (leadObj)=> (
-
-	<ListGroupItem  id={leadObj.data.id} className="unread active" style={styles.listItemActive} onClick={leadObj.onClick}>
-		
-			<div id={leadObj.data.id}>
-				<div id={leadObj.data.id}>
-					{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
 				</div>
-				<div id={leadObj.data.id} >
-				{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
-				</div>
-				<div id={leadObj.data.id} style={styles.message_text}>
-				{leadObj.data.message_text}
-				</div>
-			</div>
-		
-	</ListGroupItem>
-);
+			</div>		
+		</ListGroupItem>
+	);	
+};
 
 
 export default class TextMessageList extends React.Component {

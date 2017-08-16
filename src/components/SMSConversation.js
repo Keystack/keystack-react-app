@@ -114,6 +114,7 @@ export default class SMSConversation extends React.Component {
   constructor(props) {
     super(props);
     this.buildConversation = this.buildConversation.bind(this);
+    this.resizeEvent = debounce(100,false,this.onResize)
 
     this.state = {
     	height: window.innerHeight - 90 + "px",
@@ -122,15 +123,15 @@ export default class SMSConversation extends React.Component {
   }
 
   componentWillMount() {
-  	$(window).on('resize',debounce(100,false,this.resizeEvent));
+  	window.addEventListener('resize',this.resizeEvent);
   }
 
   componentWillUnmount() {
-  	$(window).off('resize',debounce(100,false,this.resizeEvent));
+  	window.removeEventListener('resize',this.resizeEvent);
   }
 
 
-  resizeEvent=()=>{
+  onResize=()=>{
   	this.setState({
   		height : window.innerHeight - 90 + "px"
   	});

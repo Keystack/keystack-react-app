@@ -1520,8 +1520,6 @@ let Api = {
         let email = localStorage.email;
         let key = apiConstants.GET_LATEST_INTERACTIONS;
 
-        console.log(apiConstants.GET_LATEST_INTERACTIONS);
-
         // build url
         let url = DEV_ENV ? makeDevUrl('interactions/') : makeUrl('interactions/');
         
@@ -1532,8 +1530,6 @@ let Api = {
 
             res = res || "{}";
             let data = JSON.parse(res.text);
-
-            console.log("APIUTIL.getLatestInteractions() :: response",data);
 
             let {email,authentication_token} = data;
 
