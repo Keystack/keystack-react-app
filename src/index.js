@@ -6,10 +6,11 @@ import React 	from 'react';
 import ReactDOM from 'react-dom';
 import ons 		from 'onsenui';
 
+import {AppContainer} 	from 'react-hot-loader';
+
 import KeystackUtils 	from './utils/keystack-utils';
 import CordovaContainer from './CordovaContainer';
 import WebContainer 	from './WebContainer';
-
 String.prototype.replaceAll = function (find, replace) {
     let str = this;
     return str.replace(new RegExp(find, 'g'), replace);

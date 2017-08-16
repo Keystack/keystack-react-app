@@ -52,10 +52,10 @@ export default class WebContainer extends React.Component {
           <main>
             <Switch>
               <PrivateRoute exact path='/' component={Main}/>
-              <PrivateRoute exact path='/:id' component={Main}/>
+              <Route exact path='/login' component={Login} />
+              <PrivateRoute exact path='/tab/:id' component={Main}/>
               <PrivateRoute exact path='/conversation/new' component={NewTextMessageModule} />
               <PrivateRoute exact path='/conversation/:id' component={Conversation} />
-              <Route path='/login' component={Login} />
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>
           </main> 

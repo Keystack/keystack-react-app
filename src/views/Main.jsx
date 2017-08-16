@@ -17,11 +17,7 @@ import NumbersStore from '../stores/NumbersStore';
 import UserActions from '../actions/UserActions';
 import LeadsActions from '../actions/LeadsActions';
 import NumbersActions from '../actions/NumbersActions';
-import $ from 'jquery'
-
-
-import $ from 'jquery'
-
+import $ from 'jquery';
 
 const MyTab = (props) => {
   return (
@@ -56,7 +52,7 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     NumbersStore.onChange(this.onNumberChange);
-    $(window).on('resize',this.onResize);
+    window.addEventeListener('resize',this.onResize);
   }
 
   componentDidMount() {
@@ -68,7 +64,7 @@ export default class Main extends React.Component {
 
   componentWillUnmount() {
     NumbersStore.offChange(this.onNumberChange);
-    $(window).off('resize',this.onResize);
+    window.removeEventeListener('resize',this.onResize);
   }
 
   onResize=()=>{
