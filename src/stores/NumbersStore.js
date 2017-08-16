@@ -86,7 +86,7 @@ let NumbersStore = ReactFlux.createStore({
 			activeLine: activeLine
 		};
 
-		console.log(perserveState);
+		console.log("NumberStore.persist()",perserveState);
 
 		localStorage.calucroNumbers = JSON.stringify(perserveState);
 	}
@@ -100,7 +100,7 @@ let NumbersStore = ReactFlux.createStore({
 
 		[NumbersConstants.GET_SUCCESS, function handleGetSuccess(payload){
 			
-			let mainLine = (payload.length)?payload[0]:null;
+			let mainLine = (payload.length) ? payload[0] : null;
 			let activeLine = this.getActiveLine();
 
 			this.setState({

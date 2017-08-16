@@ -24,7 +24,6 @@ export default class TextOverview extends React.Component {
     super(props);
 
     let leads = LeadsStore.getLeads();
-    let calucroNumbers = NumbersStore.getNumbers()
     let overviewMessages = 
       InteractionsStore.getActionState(
         InteractionsConstants.TEXT_MESSAGE_OVERVIEW,
@@ -35,7 +34,6 @@ export default class TextOverview extends React.Component {
       leads : leads,
       convoLeadId : null,
       messages : overviewMessages,
-      calucroNumbers : calucroNumbers,
       selectedNumber : "",      
       selectedIndex : -1,
       isLoadingLeads : false,
@@ -129,24 +127,13 @@ export default class TextOverview extends React.Component {
     let activeLine = NumbersStore.getActiveLine();
 
     if( evt.type === NumbersConstants.GET_SUCCESS ){
-
-        console.log(NumbersConstants.GET_SUCCESS,activeLine,this.state.activeLine)
-
-        if( activeLine.id !== this.state.activeLine.id ){
-      
-        let id = activeLine.id || null;
-
         // Fetch new Leads
-        InteractionsActions.getTextOverview({calucro_id:id});
-
-        this.setState({
-          calucroNumbers: numbers,
-          selectedNumber : activeLine
+        InteractionsActions.getTextOverview({
+          calucro_id : activeLine.id
         });
-      }
     }
-    
   }
+
 
   onListItemTap=(evt)=>{
     let messageID = evt.target.id;
@@ -172,13 +159,11 @@ export default class TextOverview extends React.Component {
         </ToolbarButton>
     );
 
-    if( activeLine ){
-      rightButton = (
+    rightButton = (
        <ToolbarButton ripple onClick={this.onCreateMessage}>
           <Icon icon="ion-ios-compose"></Icon>
         </ToolbarButton>
-      );
-    }
+    );
 
     return (
       <Toolbar modifier="material">

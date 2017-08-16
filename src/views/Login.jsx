@@ -29,12 +29,12 @@ export default class Login extends React.Component {
 
     if( auth.isAuth() ){
       // this.context.router.transitionTo("/")
-      this.props.history.push('/')
+      this.props.history.push('/tab/1')
     }
   }
 
   onLoginSuccess = () =>{
-    this.props.history.push('/');
+    this.props.history.push('/tab/1');
   }
 
 

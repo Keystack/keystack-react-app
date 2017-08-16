@@ -52,7 +52,7 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     NumbersStore.onChange(this.onNumberChange);
-    window.addEventeListener('resize',this.onResize);
+    window.addEventListener('resize',this.onResize);
   }
 
   componentDidMount() {
@@ -64,7 +64,7 @@ export default class Main extends React.Component {
 
   componentWillUnmount() {
     NumbersStore.offChange(this.onNumberChange);
-    window.removeEventeListener('resize',this.onResize);
+    window.removeEventListener('resize',this.onResize);
   }
 
   onResize=()=>{
@@ -189,8 +189,6 @@ export default class Main extends React.Component {
 
   render() {
 
-    console.log('Main.render()')
-
     const titles = ['Text', 'Dial','Settings'];
 
     return (
@@ -224,7 +222,7 @@ export default class Main extends React.Component {
               onPreChange={ (event) => {
                   if (event.index !== this.state.index) {
                     this.setState({index: event.index});
-                    this.props.history.push('/'+event.index);
+                    this.props.history.push('/tab/'+event.index);
                   }
                 }
               }
