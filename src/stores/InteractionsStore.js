@@ -76,25 +76,25 @@ let InteractionsStore = ReactFlux.createStore({
 			}			
 		}],
 
+		[InteractionsConstants.CREATE, function handleCreate(payload){
+			
+			console.log(InteractionsConstants.CREATE,payload);
+
+			// if interaction has a lead id store a draft under that lead drafts action state queue
+			// if new interaction, store message under phone number in drafts action state queue
+
+		}],
+
 		[InteractionsConstants.CREATE_SUCCESS, function handleCreateSuccess(payload){
 
-			let messages = [];
-
-			if(!payload.error && payload.message_text){
-
-				let {interactions} = this.getActionState(InteractionsConstants.TEXT_MESSAGES);
-
-				messages.push(payload);
-				messages = messages.concat(interactions);
-
-				
-				this.setActionState(InteractionsConstants.TEXT_MESSAGES,{
-					isUpdating: false,
-					interactions: messages,
-					error: null
-				});
-			}
+			console.log(InteractionsConstants.CREATE_SUCCESS,payload)
 			
+		}],
+
+		[InteractionsConstants.CREATE_FAIL, function handleCreate(payload){
+			
+			console.log(payload);
+			// if interaction has failed store messages under failed interactions queue using lead_id
 		}],
 
 
@@ -112,7 +112,7 @@ InteractionsStore.addActionHandler(InteractionsConstants.GET_LATEST, {
 	//returns initial state specific only to this handler
 	getInitialState: function(){
 		 return {
-			 isSaving: true,
+			 loading: false,
 			 error: null,
 			 latestInteractions: [],
 			 success: false
@@ -123,7 +123,7 @@ InteractionsStore.addActionHandler(InteractionsConstants.GET_LATEST, {
 	before: function(){
 		//this inside handler callbacks refers to the action handler itself and not to the store
 		this.setState({
-		 isSaving: true,
+		 loading: true,
 		 error: null
 		});
 	},
@@ -131,21 +131,20 @@ InteractionsStore.addActionHandler(InteractionsConstants.GET_LATEST, {
 	//this gets called after the action associated with GET_LATEST succeeds or fails
 	after: function(){
 		this.setState({
-			isSaving: false
+			loading: false
 		});
 	},
 	
 	//this gets called if the action associated with GET_LATEST succeeds
 	success: function(payload){
-
-		console.log("InteractionsStore.GET_LATEST",payload);
 		
 		if( payload.length > 0 ){			
 			this.setState({
-				isUpdating: false,
+				loading: false,
 				latestInteractions: payload.slice(0,15),
-				error: null
-			});
+				error: null,
+				success: true
+			},InteractionsConstants.GET_LATEST_SUCCESS);
 		}		
 	},
 	
@@ -230,6 +229,7 @@ InteractionsStore.addActionHandler(InteractionsConstants.TEXT_MESSAGES, {
 	before: function(){
 		//this inside handler callbacks refers to the action handler itself and not to the store
 		this.setState({
+		 interactions:[],
 		 isSaving: true,
 		 error: null
 		});
@@ -300,11 +300,14 @@ InteractionsStore.addActionHandler(InteractionsConstants.TEXT_MESSAGE_OVERVIEW, 
 	//this gets called if the action associated with TEXT_MESSAGES succeeds
 	success: function(payload){
 
-		console.log("InteractionsStore.TEXT_MESSAGE_OVERVIEW",payload);
+		console.log("InteractionsStore.TEXT_MESSAGE_OVERVIEW_SUCCESS",payload);
+
 		if(Array.isArray(payload)){
+
 			this.setState({
 				isUpdating: false,
 				overview: payload,
+				success:true,
 				error: null
 			});
 		}		

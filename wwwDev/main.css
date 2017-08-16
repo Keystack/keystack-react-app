@@ -43,23 +43,6 @@ div {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-/*textarea,
-input.text,
-input[type="text"],
-input[type="button"],
-input[type="submit"],
-input[type=number],
-input[type=password] {  
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    padding: 10px 10px;
-    line-height: 20px;
-    background: transparent;
-    outline: none;
-    border:none;
-}*/
-
 
 @font-face {
     font-family: "Montserrat";

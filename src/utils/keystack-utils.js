@@ -9,13 +9,18 @@
 	}
 };
 
+String.prototype.replaceAll = function (find, replace) {
+    let str = this;
+    return str.replace(new RegExp(find, 'g'), replace);
+};
+
 const validateEmail  = function (email) {
   let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 }
 
 const prettyNumber = function(value){
-	if(value === undefined ) return value;
+	if(value === undefined || value === null ) return value;
 
 	if( value.length > 9 )value = value.substring(0,10);
 
@@ -48,6 +53,10 @@ function throttle(callback, wait, context = this) {
   }
 }
 
+function isDefined(variable){
+	return typeof variable !== 'undefined';
+}
+
 const KeystackUtils = {
 
 	log : function( contextStr, arg1 ) {
@@ -64,6 +73,8 @@ const KeystackUtils = {
 	unPrettyNumber : unPrettyNumber,
 
 	prettyNumber : prettyNumber,
+
+	isDefined : isDefined,
 
 	logForMobile : function( outputArr ) {
 		

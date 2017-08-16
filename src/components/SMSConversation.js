@@ -114,28 +114,26 @@ export default class SMSConversation extends React.Component {
   constructor(props) {
     super(props);
     this.buildConversation = this.buildConversation.bind(this);
-    this.resizeEvent = this.resizeEvent.bind(this);
 
     this.state = {
     	height: window.innerHeight - 90 + "px",
-    	throttledResize:debounce(100,false,this.resizeEvent),
     	interactions : props.interactions.reverse() || []
     };
-
   }
 
   componentWillMount() {
-  	//$(window).on('resize',this.state.throttledResize);
+  	$(window).on('resize',debounce(100,false,this.resizeEvent));
   }
 
   componentWillUnmount() {
-  	//$(window).off('resize',this.state.throttledResize);
+  	$(window).off('resize',debounce(100,false,this.resizeEvent));
   }
 
-  resizeEvent(){
-      this.setState({
-        height:window.innerHeight-90 + "px"
-      });
+
+  resizeEvent=()=>{
+  	this.setState({
+  		height : window.innerHeight - 90 + "px"
+  	});
   }
 
   componentDidUpdate() {
@@ -166,11 +164,13 @@ export default class SMSConversation extends React.Component {
 
   render() {
 
-
     return (
-      <div ref="wrapper" className="sms-convo" style={_.extend(style.wrapper,{height:this.state.height})}>
+      <div ref="wrapper" className="sms-convo" 
+      	style={_.extend(style.wrapper,{height:this.state.height})}>
       	<ul style={{padding:"0px",listStyleType:"none"}}>
-      	{(this.state.interactions.map(this.buildConversation)).reverse()}
+      	{
+      		(this.state.interactions.map(this.buildConversation)).reverse()
+      	}
       	</ul>
       </div>
     );

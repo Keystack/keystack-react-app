@@ -60,7 +60,7 @@ export default class CordovaContainer extends React.Component {
 
   componentDidMount(){
     
-    // document.addEventListener("deviceready",this.onDeviceReady);
+    document.addEventListener("deviceready",this.onDeviceReady);
 
     if( UserStore.isAuth() ){
         UserActions.get();
@@ -96,7 +96,7 @@ export default class CordovaContainer extends React.Component {
   render() {
 
     return (
-      <HashRouter>
+      <HashRouter >
           <main>
             <Switch>
               <PrivateRoute exact path='/' component={Main}/>

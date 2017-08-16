@@ -2,8 +2,7 @@ import React from 'react';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 import {Link} from 'react-router-dom';
-
-import BeatLoader from 'respinner/lib/BeatLoader';
+import {ProgressCircular} from 'react-onsenui';
 
 import {throttle,debounce} from 'throttle-debounce';
 import _ from "lodash";
@@ -47,14 +46,55 @@ const styles = {
 		textAlign:"center",
 		fontSize:"1.2em",
 		color:"white"
+	},
+	progressBar : {
+		margin:"0 auto", 
+		paddingTop:"50%", 
+		width:"50%", 
+		height:"70px",
+		textAlign:"center"
 	}
 };
 
-const beatLoaderInstance  = (
-  <div style={{position:'absolute',top:"50%",left:"50%",marginLeft:"-68px",marginTop:"-20px"}}>
-    <BeatLoader className="col-md-12" fill="#333" count={8} />
-  </div>
+
+const UnreadItem = (leadObj)=> (
+
+	<ListGroupItem  id={leadObj.data.id} className="unread" style={styles.listItemActive} onClick={leadObj.onClick}>
+		
+			<div id={leadObj.data.id}>
+				<div id={leadObj.data.id}>
+					{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
+				</div>
+				<div id={leadObj.data.id} >
+				{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
+				</div>
+				<div id={leadObj.data.id} style={styles.message_text}>
+				{leadObj.data.message_text}
+				</div>			
+			</div>
+		
+	</ListGroupItem>
 );
+
+const ActiveItem = (leadObj)=> (
+
+	<ListGroupItem  id={leadObj.data.id} className="unread active" style={styles.listItemActive} onClick={leadObj.onClick}>
+		
+			<div id={leadObj.data.id}>
+				<div id={leadObj.data.id}>
+					{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
+				</div>
+				<div id={leadObj.data.id} >
+				{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
+				</div>
+				<div id={leadObj.data.id} style={styles.message_text}>
+				{leadObj.data.message_text}
+				</div>
+			</div>
+		
+	</ListGroupItem>
+);
+
 
 export default class TextMessageList extends React.Component {
 
@@ -102,58 +142,19 @@ export default class TextMessageList extends React.Component {
   		return null;
   	}
 
-	const UnreadItem = (leadObj)=> (
-
-		<ListGroupItem  id={leadObj.data.id} className="unread" style={styles.listItemActive} onClick={this.props.onItemTap}>
-			
-				<div id={leadObj.data.id}>
-					<div id={leadObj.data.id}>
-						{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
-					</div>
-					<div id={leadObj.data.id} >
-					{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
-					</div>
-					<div id={leadObj.data.id} style={styles.message_text}>
-					{leadObj.data.message_text}
-					</div>			
-				</div>
-			
-		</ListGroupItem>
-	);
-
-	const ActiveItem = (leadObj)=> (
-
-		<ListGroupItem  id={leadObj.data.id} className="unread active" style={styles.listItemActive} onClick={this.props.onItemTap}>
-			
-				<div id={leadObj.data.id}>
-					<div id={leadObj.data.id}>
-						{(leadObj.data.outgoing_number && !leadObj.data.first_name)?leadObj.data.outgoing_number:leadObj.data.incoming_number}	
-					</div>
-					<div id={leadObj.data.id} >
-					{(leadObj.data.first_name)?`${leadObj.data.first_name +" "+ leadObj.data.last_name}`:leadObj.data.formatted_phone}
-					</div>
-					<div id={leadObj.data.id} style={styles.message_text}>
-					{leadObj.data.message_text}
-					</div>
-				</div>
-			
-		</ListGroupItem>
-	);
-
-
   	let selected = (this.props.activeMessage === x)?true:false;
 
   	if( selected ){
   		return(
-  			<ActiveItem data={item} key={x} />
+  			<ActiveItem data={item} key={x} onClick={this.props.onItemTap}/>
   		);
   	}else if( item.unread ){
   		return(
-  			<UnreadItem data={item} key={x} />
+  			<UnreadItem data={item} key={x} onClick={this.props.onItemTap} />
   		);
   	}else if( !item.unread ){
   		return(
-  			<UnreadItem data={item}  key={x} />
+  			<UnreadItem data={item}  key={x} onClick={this.props.onItemTap} />
   		);
   	}
 
@@ -166,9 +167,9 @@ export default class TextMessageList extends React.Component {
   	
   	if( this.props.loading ){
   		return(
-  			<div style={_.extend(styles.leadList,{height:this.state.height})} className="lead-list layout-column flex">		
-		  		{beatLoaderInstance}
-			</div>
+  			<div style={styles.progressBar}>
+  				<ProgressCircular indeterminate  />
+  			</div>
 		);
   	}
 
@@ -184,14 +185,7 @@ export default class TextMessageList extends React.Component {
 
   	return (
   		<div style={_.extend(styles.leadList,{height:this.state.height})} className="lead-list layout-column flex">
-	  		<ListGroup className="flex">	
-		      <ListGroupItem id="blank" style={styles.listItem} onClick={this.props.onItemTap}>
-				<div id="blank">
-					<div id="blank" className="avatar pull-left" style={styles.listAvatarDefault}>$</div>
-					<div id="blank" className="pull-right" style={{lineHeight:"60px",marginRight:"30px"}}>Get to work. No Leads yet!</div>
-				</div>
-			  </ListGroupItem>
-		  	</ListGroup>
+	  		<h1 style={{color:"#999",lineHeight:this.state.height,textAlign:"center"}}>No Messages</h1>
 	  	</div>
 	);
     
