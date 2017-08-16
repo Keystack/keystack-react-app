@@ -13,7 +13,7 @@ const scssLoader = [
 
 const config = {
   entry : [
-    path.join(__dirname, '/src/index.js')
+    path.join(__dirname, '/src/index-production.js')
   ],
   resolve: {
     extensions: [".js",".jsx","css","scss","sass"],

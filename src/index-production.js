@@ -6,8 +6,7 @@ import React 	from 'react';
 import ReactDOM from 'react-dom';
 import ons 		from 'onsenui';
 
-import { AppContainer } from 'react-hot-loader';
-import WebContainer 	from './WebContainer';
+import CordovaContainer from './CordovaContainer';
 
 String.prototype.replaceAll = function (find, replace) {
     let str = this;
@@ -17,17 +16,6 @@ String.prototype.replaceAll = function (find, replace) {
 // Select Platform
 ons.platform.select('android')
 
-const render = Component =>{
-  ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
-    document.getElementById('app') 
-  );
-}
+// Uncomment this for Production
+ReactDOM.render(<CordovaContainer />, document.getElementById('app'));
 
-render(WebContainer);
-
-if (module.hot) {
-  module.hot.accept('./WebContainer', () => { render(WebContainer) })
-}

@@ -7,6 +7,7 @@ import Main    from  './views/Main';
 import Login from  './views/Login';
 import Profile from  './views/Profile';
 import Conversation from './views/Conversation';
+import NewTextMessageModule from './components/NewTextMessageModule';
 
 import UserStore    from './stores/UserStore';
 
@@ -100,8 +101,10 @@ export default class CordovaContainer extends React.Component {
           <main>
             <Switch>
               <PrivateRoute exact path='/' component={Main}/>
-              <PrivateRoute path='/conversation/:id' component={Conversation} />
-              <Route path='/login' component={Login} />
+              <Route exact path='/login' component={Login} />
+              <PrivateRoute exact path='/tab/:id' component={Main}/>
+              <PrivateRoute exact path='/conversation/new' component={NewTextMessageModule} />
+              <PrivateRoute exact path='/conversation/:id' component={Conversation} />
               <PrivateRoute path='/profile' component={Profile} />
             </Switch>
           </main> 
